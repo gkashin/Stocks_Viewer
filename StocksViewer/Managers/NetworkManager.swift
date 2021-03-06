@@ -1,0 +1,74 @@
+//
+//  NetworkManager.swift
+//  StocksViewer
+//
+//  Created by Георгий Кашин on 04.03.2021.
+//
+
+import UIKit
+
+enum Result {
+    case success(data: Any? = nil)
+    case failure(error: Error? = nil)
+}
+
+final class NetworkManager {
+    
+    // MARK: Stored Properties
+    static let shared = NetworkManager()
+    private let baseURL = URL(string: "https://finnhub.io/api/v1/")!
+    private let apiKey = "c109iuf48v6t383m4pe0"
+                          
+    // MARK: Initializers
+    private init() {}
+}
+
+// MARK: - Meetings GET
+extension NetworkManager {
+    func getAllStocks(completion: @escaping (Result) -> ()) {
+        let getStocksURL = baseURL.appendingPathComponent("stock/symbol")
+        
+        var urlComponents = URLComponents(url: getStocksURL, resolvingAgainstBaseURL: true)
+        
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "exchange", value: "US"),
+            URLQueryItem(name: "token", value: apiKey),
+        ]
+        
+        guard let getStocksURLWithQuery = urlComponents?.url else {
+            print(#line, #function, "Failed to form url with query")
+            return completion(.failure())
+        }
+        
+        var request = URLRequest(url: getStocksURLWithQuery)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let httpResponse = response as? HTTPURLResponse
+            
+            guard error == nil else {
+                print(#line, #function, error!.localizedDescription)
+                return completion(.failure(error: error!))
+            }
+            
+            guard httpResponse?.statusCode == 200 else {
+                print(#line, #function, "Failed with response code \(String(describing: httpResponse?.statusCode))")
+                return completion(.failure())
+            }
+            
+            guard let data = data else {
+                print(#line, #function, "Couldn't get data from \(getStocksURL)")
+                return completion(.failure())
+            }
+            
+            let jsonDecoder = JSONDecoder()
+            
+            guard let stocks = try? jsonDecoder.decode([Stock].self, from: data) else {
+                print(#line, #function, "Couldn't decode data from \(data)")
+                return completion(.failure())
+            }
+            
+            completion(.success(data: stocks))
+        }.resume()
+    }
+}
