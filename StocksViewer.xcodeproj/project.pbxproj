@@ -18,6 +18,7 @@
 		5B15ECA325EE30B700058D09 /* StocksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECA225EE30B700058D09 /* StocksView.swift */; };
 		5B15ECA825EE31EA00058D09 /* StockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECA725EE31EA00058D09 /* StockCell.swift */; };
 		5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */; };
+		5BD89CAA25F617630065C517 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD89CA925F617630065C517 /* User.swift */; };
 		5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +57,7 @@
 		5B15ECA225EE30B700058D09 /* StocksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StocksView.swift; sourceTree = "<group>"; };
 		5B15ECA725EE31EA00058D09 /* StockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockCell.swift; sourceTree = "<group>"; };
 		5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
+		5BD89CA925F617630065C517 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				5B15EC9A25EE2F1C00058D09 /* Stock.swift */,
+				5BD89CA925F617630065C517 /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				5B15ECA825EE31EA00058D09 /* StockCell.swift in Sources */,
 				5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */,
 				5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */,
+				5BD89CAA25F617630065C517 /* User.swift in Sources */,
 				5B15EC9B25EE2F1C00058D09 /* Stock.swift in Sources */,
 				5B0E124D25EE2BD900B66622 /* SceneDelegate.swift in Sources */,
 				5B15ECA325EE30B700058D09 /* StocksView.swift in Sources */,

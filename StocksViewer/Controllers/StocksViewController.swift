@@ -51,8 +51,17 @@ private extension StocksViewController {
 
 // MARK: Actions
 private extension StocksViewController {
-    func addToFavourites() {
-        print(#line, #function)
+    func addToFavourites(index: Int) -> Bool {
+        print(#line, #function, index)
+        guard let ticker = stocks[index].ticker else { return false }
+        
+        if User.shared.checkTicker(ticker) {
+            User.shared.removeStockFromFavourites(with: ticker)
+        } else {
+            User.shared.addStockToFavourites(with: ticker)
+        }
+        
+        return true
     }
 }
 
@@ -89,7 +98,8 @@ extension StocksViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: StockCell.identifier, for: indexPath)
         guard let stockCell = cell as? StockCell else { return cell }
         // Configure cell with stock
-        stockCell.configure(withStock: stocks[indexPath.row], addToFavouritesAction: addToFavourites)
+        let index = indexPath.row
+        stockCell.configure(withStock: stocks[index], index: index, addToFavouritesAction: addToFavourites)
         
         return stockCell
     }

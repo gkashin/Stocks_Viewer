@@ -30,9 +30,9 @@ struct Constants {
 final class StockCell: UITableViewCell {
     static let identifier = "StockCellId"
     
-    private var addToFavouritesAction: (() -> Void)?
-    private var addedToFavourites = false
+    private var addToFavouritesAction: ((Int) -> Bool)?
     
+    private var stock = Stock()
     private var tickerLabel = UILabel()
     private var companyNameLabel = UILabel()
     private var currentPriceLabel = UILabel()
@@ -42,7 +42,7 @@ final class StockCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+    
         setupUI()
     }
     
@@ -53,16 +53,14 @@ final class StockCell: UITableViewCell {
 
 // MARK: - Public Methods
 extension StockCell {
-    func configure(withStock stock: Stock, addToFavouritesAction: @escaping () -> Void) {
-        // TODO: -
-        // Add stock property for color
-        // Bug with selecting favourites
-        
+    func configure(withStock stock: Stock, index: Int, addToFavouritesAction: @escaping (Int) -> Bool) {
         self.addToFavouritesAction = addToFavouritesAction
+        addToFavouritesButton.tag = index
+        addToFavouritesButton.tintColor = User.shared.checkTicker(stock.ticker) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
         tickerLabel.text = stock.ticker
         companyNameLabel.text = stock.companyName
         companyNameLabel.font = Constants.Fonts.bodyFont
-    
+
 //        currentPriceLabel = UILabel(text: "\(String(describing: stock.currentPrice))")
 //        let textColor = stock.priceChangePerDay < 0 ? Constants.Colors.redFont : Constants.Colors.greenFont
 //        priceChangePerDayLabel = UILabel(text: "\(String(describing: stock.priceChangePerDay))", textColor: textColor, font: Constants.Fonts.bodyFont)
@@ -71,10 +69,10 @@ extension StockCell {
 
 // MARK: Actions
 private extension StockCell {
-    @objc func addToFavouritesButtonTapped() {
-        addedToFavourites.toggle()
-        addToFavouritesButton.tintColor = addedToFavourites ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
-        addToFavouritesAction?()
+    @objc func addToFavouritesButtonTapped(_ sender: UIButton) {
+        if addToFavouritesAction?(sender.tag) == true {
+            changeButtonColor()
+        }
     }
 }
 
@@ -123,13 +121,21 @@ private extension StockCell {
         ])
     }
     
+    func changeButtonColor() {
+        if addToFavouritesButton.tintColor == Constants.Colors.filledStar {
+            addToFavouritesButton.tintColor = Constants.Colors.notFilledStar
+        } else {
+            addToFavouritesButton.tintColor = Constants.Colors.filledStar
+        }
+    }
+    
     func setupAddToFavouritesButton() {
         contentView.addSubview(addToFavouritesButton)
         setupAddToFavouritesButtonConstraints()
         addToFavouritesButton.setImage(Constants.Images.star, for: .normal)
         addToFavouritesButton.tintColor = Constants.Colors.notFilledStar
         
-        addToFavouritesButton.addTarget(self, action: #selector(addToFavouritesButtonTapped), for: .touchUpInside)
+        addToFavouritesButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
     }
     
     func setupAddToFavouritesButtonConstraints() {
