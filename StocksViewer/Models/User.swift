@@ -7,11 +7,19 @@
 
 import Foundation
 
-class User {
+final class User {
     static let shared = User()
-    private var favouriteStockTickers = Set<String>()
     
-    private init() {}
+    private var favouriteStockTickers = Set<String>() {
+        didSet {
+            DataManager.saveTickers(Array(favouriteStockTickers))
+        }
+    }
+    
+    private init() {
+        let tickers = DataManager.getTickers()
+        favouriteStockTickers = Set(tickers)
+    }
 
     func addStockToFavourites(with ticker: String) {
         favouriteStockTickers.insert(ticker)

@@ -65,14 +65,14 @@ private extension StocksViewController {
     }
 }
 
-// MARK: Network
+// MARK: - Network
 private extension StocksViewController {
     func loadStocks() {
         NetworkManager.shared.getAllStocks { result in
             switch result {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
-                self.stocks = stocks
+                self.stocks = stocks.sorted(by: { $0.ticker < $1.ticker })
                 self.stocksView.updateTable()
             case .failure(error: let error):
                 print(error?.localizedDescription ?? "")
