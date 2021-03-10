@@ -20,6 +20,7 @@
 		5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */; };
 		5B3F71D825F7640F006C6531 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3F71D725F7640F006C6531 /* DataManager.swift */; };
 		5BD89CAA25F617630065C517 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD89CA925F617630065C517 /* User.swift */; };
+		5BE1B8E625F89CA400E6E2AF /* FavouritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */; };
 		5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +61,7 @@
 		5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		5B3F71D725F7640F006C6531 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		5BD89CA925F617630065C517 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesViewController.swift; sourceTree = "<group>"; };
 		5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -180,6 +182,7 @@
 		5B0E128425EE2C2C00B66622 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */,
 				5B0E124E25EE2BD900B66622 /* StocksViewController.swift */,
 			);
 			path = Controllers;
@@ -326,6 +329,7 @@
 				5B0E124F25EE2BD900B66622 /* StocksViewController.swift in Sources */,
 				5B3F71D825F7640F006C6531 /* DataManager.swift in Sources */,
 				5B0E124B25EE2BD900B66622 /* AppDelegate.swift in Sources */,
+				5BE1B8E625F89CA400E6E2AF /* FavouritesViewController.swift in Sources */,
 				5B15ECA825EE31EA00058D09 /* StockCell.swift in Sources */,
 				5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */,
 				5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */,

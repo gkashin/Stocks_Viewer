@@ -7,15 +7,16 @@
 
 import UIKit
 
-private struct StocksViewControllerConstants {
+struct StocksViewControllerConstants {
     static let title = "Stocks"
+    static let favouritesBarButtonTitle = "Favourites"
     static let cellHeight: CGFloat = 68
 }
 
 class StocksViewController: UIViewController {
     
-    private var stocks = [Stock]()
-    private var stocksView: StocksView!
+    var stocks = [Stock]()
+    var stocksView: StocksView!
     
     // MARK: Initializers
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -36,16 +37,33 @@ class StocksViewController: UIViewController {
     override func loadView() {
         self.view = stocksView
     }
+    
+    func setupTitle() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: StocksViewControllerConstants.favouritesBarButtonTitle, style: .done, target: self, action: #selector(favouritesBarButtonTapped))
+        title = StocksViewControllerConstants.title
+    }
+    
+    func loadStocks() {
+        NetworkManager.shared.getAllStocks { result in
+            switch result {
+            case .success(data: let data):
+                guard let stocks = data as? [Stock] else { return }
+                self.stocks = stocks.sorted(by: { $0.ticker < $1.ticker })
+                self.stocksView.updateTable()
+            case .failure(error: let error):
+                print(error?.localizedDescription ?? "")
+            }
+        }
+    }
 }
 
 // MARK: - Private Methods
 // MARK: UI
-private extension StocksViewController {
+extension StocksViewController {
     func setupUI() {
         view.backgroundColor = Constants.Colors.background
-        // Setup title
-        navigationController?.navigationBar.prefersLargeTitles = true
-        title = StocksViewControllerConstants.title
+        setupTitle()
     }
 }
 
@@ -63,22 +81,27 @@ private extension StocksViewController {
         
         return true
     }
+    
+    @objc func favouritesBarButtonTapped() {
+        let favouritesVC = FavouritesViewController()
+        navigationController?.pushViewController(favouritesVC, animated: true)
+    }
 }
 
 // MARK: - Network
 private extension StocksViewController {
-    func loadStocks() {
-        NetworkManager.shared.getAllStocks { result in
-            switch result {
-            case .success(data: let data):
-                guard let stocks = data as? [Stock] else { return }
-                self.stocks = stocks.sorted(by: { $0.ticker < $1.ticker })
-                self.stocksView.updateTable()
-            case .failure(error: let error):
-                print(error?.localizedDescription ?? "")
-            }
-        }
-    }
+//    func loadStocks() {
+//        NetworkManager.shared.getAllStocks { result in
+//            switch result {
+//            case .success(data: let data):
+//                guard let stocks = data as? [Stock] else { return }
+//                self.stocks = stocks.sorted(by: { $0.ticker < $1.ticker })
+//                self.stocksView.updateTable()
+//            case .failure(error: let error):
+//                print(error?.localizedDescription ?? "")
+//            }
+//        }
+//    }
 }
 
 // MARK: - UITableViewDelegate

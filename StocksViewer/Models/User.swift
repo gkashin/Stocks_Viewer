@@ -10,7 +10,7 @@ import Foundation
 final class User {
     static let shared = User()
     
-    private var favouriteStockTickers = Set<String>() {
+    private(set) var favouriteStockTickers = Set<String>() {
         didSet {
             DataManager.saveTickers(Array(favouriteStockTickers))
         }
