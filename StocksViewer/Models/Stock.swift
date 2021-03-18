@@ -7,11 +7,17 @@
 
 import Foundation
 
-final class Stock: Decodable {
+struct Stock: Decodable {
     private(set) var ticker: String!
     private(set) var companyName: String!
-    private(set) var currentPrice: Decimal!
+    var currentPrice: Decimal!
     private(set) var priceChangePerDay: Decimal!
+}
+
+extension Stock: Hashable {
+    static func == (lhs: Stock, rhs: Stock) -> Bool {
+        return lhs.ticker == rhs.ticker
+    }
 }
 
 // MARK: CodingKeys
@@ -19,5 +25,6 @@ extension Stock {
     enum CodingKeys: String, CodingKey {
         case ticker = "symbol"
         case companyName = "description"
+        case currentPrice = "c"
     }
 }

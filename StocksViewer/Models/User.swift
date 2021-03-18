@@ -10,26 +10,26 @@ import Foundation
 final class User {
     static let shared = User()
     
-    private(set) var favouriteStockTickers = Set<String>() {
+    private(set) var favouriteStocks = Set<Stock>() {
         didSet {
-            DataManager.saveTickers(Array(favouriteStockTickers))
+            DataManager.saveStocks(Array(favouriteStocks))
         }
     }
     
     private init() {
-        let tickers = DataManager.getTickers()
-        favouriteStockTickers = Set(tickers)
+        let stocks = DataManager.getStocks()
+        favouriteStocks = Set(stocks)
     }
 
-    func addStockToFavourites(with ticker: String) {
-        favouriteStockTickers.insert(ticker)
+    func addStockToFavourites(_ stock: Stock) {
+        favouriteStocks.insert(stock)
     }
     
-    func removeStockFromFavourites(with ticker: String) {
-        favouriteStockTickers.remove(ticker)
+    func removeStockFromFavourites(_ stock: Stock) {
+        favouriteStocks.remove(stock)
     }
     
-    func checkTicker(_ ticker: String) -> Bool {
-        return favouriteStockTickers.contains(ticker)
+    func checkStock(_ stock: Stock) -> Bool {
+        return favouriteStocks.contains(stock)
     }
 }

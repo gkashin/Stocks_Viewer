@@ -30,7 +30,7 @@ struct Constants {
 final class StockCell: UITableViewCell {
     static let identifier = "StockCellId"
     
-    private var addToFavouritesAction: ((Int) -> Bool)?
+    private var addToFavouritesAction: ((Int) -> Void)?
     
     private var stock = Stock()
     private var tickerLabel = UILabel()
@@ -53,15 +53,15 @@ final class StockCell: UITableViewCell {
 
 // MARK: - Public Methods
 extension StockCell {
-    func configure(withStock stock: Stock, index: Int, addToFavouritesAction: @escaping (Int) -> Bool) {
+    func configure(withStock stock: Stock, index: Int, addToFavouritesAction: @escaping (Int) -> (Void)) {
         self.addToFavouritesAction = addToFavouritesAction
         addToFavouritesButton.tag = index
-        addToFavouritesButton.tintColor = User.shared.checkTicker(stock.ticker) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
+        addToFavouritesButton.tintColor = User.shared.checkStock(stock) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
         tickerLabel.text = stock.ticker
         companyNameLabel.text = stock.companyName
         companyNameLabel.font = Constants.Fonts.bodyFont
 
-//        currentPriceLabel = UILabel(text: "\(String(describing: stock.currentPrice))")
+        currentPriceLabel.text = "\(stock.currentPrice ?? 0)"
 //        let textColor = stock.priceChangePerDay < 0 ? Constants.Colors.redFont : Constants.Colors.greenFont
 //        priceChangePerDayLabel = UILabel(text: "\(String(describing: stock.priceChangePerDay))", textColor: textColor, font: Constants.Fonts.bodyFont)
     }
@@ -70,9 +70,8 @@ extension StockCell {
 // MARK: Actions
 private extension StockCell {
     @objc func addToFavouritesButtonTapped(_ sender: UIButton) {
-        if addToFavouritesAction?(sender.tag) == true {
-            changeButtonColor()
-        }
+        addToFavouritesAction?(sender.tag)
+        changeButtonColor()
     }
 }
 

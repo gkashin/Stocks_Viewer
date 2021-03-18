@@ -10,18 +10,18 @@ import Foundation
 final class DataManager {
     
     // MARK: Stocks
-    static func saveTickers(_ tickers: [String]) {
-        UserDefaults.standard.set(tickers, forKey: UserDefaultsKeys.tickers.rawValue)
+    static func saveStocks(_ stocks: [Stock]) {
+        UserDefaults.standard.set(stocks, forKey: UserDefaultsKeys.stocks.rawValue)
     }
     
-    static func getTickers() -> [String] {
-        return UserDefaults.standard.stringArray(forKey: UserDefaultsKeys.tickers.rawValue) ?? []
+    static func getStocks() -> [Stock] {
+        return UserDefaults.standard.array(forKey: UserDefaultsKeys.stocks.rawValue) as? [Stock] ?? []
     }
 }
 
 // MARK: - UserDefaultsKeys
 extension DataManager {
     enum UserDefaultsKeys: String {
-        case tickers
+        case stocks
     }
 }

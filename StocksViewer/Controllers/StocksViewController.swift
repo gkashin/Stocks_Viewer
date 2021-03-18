@@ -49,8 +49,9 @@ class StocksViewController: UIViewController {
             switch result {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
-                self.stocks = stocks.sorted(by: { $0.ticker < $1.ticker })
+                self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker })[...20])
                 self.stocksView.updateTable()
+                self.loadQuotes()
             case .failure(error: let error):
                 print(error?.localizedDescription ?? "")
             }
@@ -65,21 +66,43 @@ extension StocksViewController {
         view.backgroundColor = Constants.Colors.background
         setupTitle()
     }
+    
+    func loadQuotes() {
+//        WebSocketManager.shared.subscribeForTrade()
+//        WebSocketManager.shared.receiveData { result in
+//
+//        }
+        WebSocketManager.shared.connectToWebSocket()
+        
+        
+        for (index, stock) in stocks.enumerated() {
+//            NetworkManager.shared.getQuote(byTicker: stock.ticker) { result in
+//                switch result {
+//                case .success(data: let data):
+//                    guard let currentPrice = data as? Decimal else { return }
+//                    self.stocks[index].currentPrice = currentPrice
+//                    if index % 10 == 0 {
+//                        self.stocksView.updateTable()
+//                    }
+//                case .failure(error: let error):
+//                    print(error?.localizedDescription ?? "")
+//                }
+//            }
+        }
+    }
 }
 
 // MARK: Actions
 private extension StocksViewController {
-    func addToFavourites(index: Int) -> Bool {
+    func addToFavourites(index: Int) {
         print(#line, #function, index)
-        guard let ticker = stocks[index].ticker else { return false }
+        let stock = stocks[index]
         
-        if User.shared.checkTicker(ticker) {
-            User.shared.removeStockFromFavourites(with: ticker)
+        if User.shared.checkStock(stock) {
+            User.shared.removeStockFromFavourites(stock)
         } else {
-            User.shared.addStockToFavourites(with: ticker)
+            User.shared.addStockToFavourites(stock)
         }
-        
-        return true
     }
     
     @objc func favouritesBarButtonTapped() {
