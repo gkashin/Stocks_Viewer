@@ -18,12 +18,12 @@ final class NetworkManager {
     static let shared = NetworkManager()
     private let baseURL = URL(string: "https://finnhub.io/api/v1/")!
     private let apiKey = "c109iuf48v6t383m4pe0"
-                          
+    
     // MARK: Initializers
     private init() {}
 }
 
-// MARK: - Meetings GET
+// MARK: - Stocks GET
 extension NetworkManager {
     func getAllStocks(completion: @escaping (Result) -> ()) {
         let getStocksURL = baseURL.appendingPathComponent("stock/symbol")
@@ -57,7 +57,7 @@ extension NetworkManager {
             }
             
             guard let data = data else {
-                print(#line, #function, "Couldn't get data from \(getStocksURL)")
+                print(#line, #function, "Couldn't get data from \(getStocksURLWithQuery)")
                 return completion(.failure())
             }
             
@@ -69,6 +69,56 @@ extension NetworkManager {
             }
             
             completion(.success(data: stocks))
+        }.resume()
+    }
+    
+    func getQuote(byTicker ticker: String, completion: @escaping (Result) -> Void) {
+        let getQuoteURL = baseURL.appendingPathComponent("quote")
+        
+        var urlComponents = URLComponents(url: getQuoteURL, resolvingAgainstBaseURL: true)
+        
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "symbol", value: ticker),
+            URLQueryItem(name: "token", value: apiKey),
+        ]
+        
+        guard let getQuoteURLWithQuery = urlComponents?.url else {
+            print(#line, #function, "Failed to form url with query")
+            return completion(.failure())
+        }
+        
+        var request = URLRequest(url: getQuoteURLWithQuery)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let httpResponse = response as? HTTPURLResponse
+            
+            guard error == nil else {
+                print(#line, #function, error!.localizedDescription)
+                return completion(.failure(error: error!))
+            }
+            
+            guard httpResponse?.statusCode == 200 else {
+                print(#line, #function, "Failed with response code \(String(describing: httpResponse?.statusCode))")
+                return completion(.failure())
+            }
+            
+            guard let data = data else {
+                print(#line, #function, "Couldn't get data from \(getQuoteURLWithQuery)")
+                return completion(.failure())
+            }
+            
+            guard let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String : Any] else {
+                print(#line, #function, "Couldn't decode data from \(data)")
+                return completion(.failure())
+            }
+            
+            guard let currentPrice = jsonDictionary[Stock.CodingKeys.currentPrice.rawValue] as? Double else {
+                print(#line, #function, "Couldn't get current price from \(jsonDictionary)")
+                return completion(.failure())
+            }
+            
+            completion(.success(data: currentPrice))
         }.resume()
     }
 }

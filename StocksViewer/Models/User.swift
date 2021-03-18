@@ -8,7 +8,7 @@
 import Foundation
 
 final class User {
-    static let shared = User()
+    static let active = User()
     
     private(set) var favouriteStocks = Set<Stock>() {
         didSet {

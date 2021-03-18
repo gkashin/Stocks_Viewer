@@ -34,6 +34,11 @@ class StocksViewController: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        stocksView.updateTable()
+    }
+    
     override func loadView() {
         self.view = stocksView
     }
@@ -57,22 +62,20 @@ class StocksViewController: UIViewController {
             }
         }
     }
-}
-
-// MARK: - Private Methods
-// MARK: UI
-extension StocksViewController {
-    func setupUI() {
-        view.backgroundColor = Constants.Colors.background
-        setupTitle()
+    
+    func addOrRemoveFavouriteStock(index: Int) {
+        print(#line, #function, index)
+        let stock = stocks[index]
+        
+        if User.active.checkStock(stock) {
+            User.active.removeStockFromFavourites(stock)
+        } else {
+            User.active.addStockToFavourites(stock)
+        }
     }
     
     func loadQuotes() {
-//        WebSocketManager.shared.subscribeForTrade()
-//        WebSocketManager.shared.receiveData { result in
-//
-//        }
-        WebSocketManager.shared.connectToWebSocket()
+//        WebSocketManager.shared.connectToWebSocket()
         
         
         for (index, stock) in stocks.enumerated() {
@@ -92,19 +95,17 @@ extension StocksViewController {
     }
 }
 
+// MARK: - Private Methods
+// MARK: UI
+extension StocksViewController {
+    func setupUI() {
+        view.backgroundColor = Constants.Colors.background
+        setupTitle()
+    }
+}
+
 // MARK: Actions
 private extension StocksViewController {
-    func addToFavourites(index: Int) {
-        print(#line, #function, index)
-        let stock = stocks[index]
-        
-        if User.shared.checkStock(stock) {
-            User.shared.removeStockFromFavourites(stock)
-        } else {
-            User.shared.addStockToFavourites(stock)
-        }
-    }
-    
     @objc func favouritesBarButtonTapped() {
         let favouritesVC = FavouritesViewController()
         navigationController?.pushViewController(favouritesVC, animated: true)
@@ -145,7 +146,7 @@ extension StocksViewController: UITableViewDataSource {
         guard let stockCell = cell as? StockCell else { return cell }
         // Configure cell with stock
         let index = indexPath.row
-        stockCell.configure(withStock: stocks[index], index: index, addToFavouritesAction: addToFavourites)
+        stockCell.configure(withStock: stocks[index], index: index, addOrRemoveFavouriteStockAction: addOrRemoveFavouriteStock)
         
         return stockCell
     }

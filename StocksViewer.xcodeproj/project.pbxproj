@@ -21,6 +21,7 @@
 		5B3F71D825F7640F006C6531 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3F71D725F7640F006C6531 /* DataManager.swift */; };
 		5BD89CAA25F617630065C517 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD89CA925F617630065C517 /* User.swift */; };
 		5BE1B8E625F89CA400E6E2AF /* FavouritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */; };
+		5BE1B8EE25FA0E7900E6E2AF /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE1B8ED25FA0E7900E6E2AF /* WebSocketManager.swift */; };
 		5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		5B3F71D725F7640F006C6531 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		5BD89CA925F617630065C517 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesViewController.swift; sourceTree = "<group>"; };
+		5BE1B8ED25FA0E7900E6E2AF /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -182,8 +184,8 @@
 		5B0E128425EE2C2C00B66622 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */,
 				5B0E124E25EE2BD900B66622 /* StocksViewController.swift */,
+				5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -193,6 +195,7 @@
 			children = (
 				5B3F71D725F7640F006C6531 /* DataManager.swift */,
 				5BF26AEA25F0CC9500845C65 /* NetworkManager.swift */,
+				5BE1B8ED25FA0E7900E6E2AF /* WebSocketManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				5B15EC9B25EE2F1C00058D09 /* Stock.swift in Sources */,
 				5B0E124D25EE2BD900B66622 /* SceneDelegate.swift in Sources */,
 				5B15ECA325EE30B700058D09 /* StocksView.swift in Sources */,
+				5BE1B8EE25FA0E7900E6E2AF /* WebSocketManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

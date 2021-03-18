@@ -30,7 +30,7 @@ struct Constants {
 final class StockCell: UITableViewCell {
     static let identifier = "StockCellId"
     
-    private var addToFavouritesAction: ((Int) -> Void)?
+    private var addOrRemoveFavouriteStockAction: ((Int) -> Void)?
     
     private var stock = Stock()
     private var tickerLabel = UILabel()
@@ -38,7 +38,7 @@ final class StockCell: UITableViewCell {
     private var currentPriceLabel = UILabel()
     private var priceChangePerDayLabel = UILabel()
     
-    private var addToFavouritesButton = UIButton()
+    private var addOrRemoveFavouriteStockButton = UIButton()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -53,10 +53,10 @@ final class StockCell: UITableViewCell {
 
 // MARK: - Public Methods
 extension StockCell {
-    func configure(withStock stock: Stock, index: Int, addToFavouritesAction: @escaping (Int) -> (Void)) {
-        self.addToFavouritesAction = addToFavouritesAction
-        addToFavouritesButton.tag = index
-        addToFavouritesButton.tintColor = User.shared.checkStock(stock) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
+    func configure(withStock stock: Stock, index: Int, addOrRemoveFavouriteStockAction: @escaping (Int) -> (Void)) {
+        self.addOrRemoveFavouriteStockAction = addOrRemoveFavouriteStockAction
+        addOrRemoveFavouriteStockButton.tag = index
+        addOrRemoveFavouriteStockButton.tintColor = User.active.checkStock(stock) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
         tickerLabel.text = stock.ticker
         companyNameLabel.text = stock.companyName
         companyNameLabel.font = Constants.Fonts.bodyFont
@@ -70,7 +70,7 @@ extension StockCell {
 // MARK: Actions
 private extension StockCell {
     @objc func addToFavouritesButtonTapped(_ sender: UIButton) {
-        addToFavouritesAction?(sender.tag)
+        addOrRemoveFavouriteStockAction?(sender.tag)
         changeButtonColor()
     }
 }
@@ -121,28 +121,28 @@ private extension StockCell {
     }
     
     func changeButtonColor() {
-        if addToFavouritesButton.tintColor == Constants.Colors.filledStar {
-            addToFavouritesButton.tintColor = Constants.Colors.notFilledStar
+        if addOrRemoveFavouriteStockButton.tintColor == Constants.Colors.filledStar {
+            addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.notFilledStar
         } else {
-            addToFavouritesButton.tintColor = Constants.Colors.filledStar
+            addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.filledStar
         }
     }
     
     func setupAddToFavouritesButton() {
-        contentView.addSubview(addToFavouritesButton)
+        contentView.addSubview(addOrRemoveFavouriteStockButton)
         setupAddToFavouritesButtonConstraints()
-        addToFavouritesButton.setImage(Constants.Images.star, for: .normal)
-        addToFavouritesButton.tintColor = Constants.Colors.notFilledStar
+        addOrRemoveFavouriteStockButton.setImage(Constants.Images.star, for: .normal)
+        addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.notFilledStar
         
-        addToFavouritesButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
+        addOrRemoveFavouriteStockButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
     }
     
     func setupAddToFavouritesButtonConstraints() {
-        addToFavouritesButton.translatesAutoresizingMaskIntoConstraints = false
+        addOrRemoveFavouriteStockButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            addToFavouritesButton.centerYAnchor.constraint(equalTo: self.tickerLabel.centerYAnchor),
-            addToFavouritesButton.leadingAnchor.constraint(equalTo: self.tickerLabel.trailingAnchor, constant: 6),
+            addOrRemoveFavouriteStockButton.centerYAnchor.constraint(equalTo: self.tickerLabel.centerYAnchor),
+            addOrRemoveFavouriteStockButton.leadingAnchor.constraint(equalTo: self.tickerLabel.trailingAnchor, constant: 6),
         ])
     }
 }

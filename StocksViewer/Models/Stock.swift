@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Stock: Decodable {
+struct Stock: Codable {
     private(set) var ticker: String!
     private(set) var companyName: String!
     var currentPrice: Decimal!
