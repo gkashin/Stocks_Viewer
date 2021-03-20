@@ -19,6 +19,8 @@
 		5B15ECA825EE31EA00058D09 /* StockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECA725EE31EA00058D09 /* StockCell.swift */; };
 		5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */; };
 		5B3F71D825F7640F006C6531 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3F71D725F7640F006C6531 /* DataManager.swift */; };
+		5B7525C22605E1EC0091E648 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7525C12605E1EC0091E648 /* Double+Extension.swift */; };
+		5B7525D02605EBE80091E648 /* UIStackView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7525CF2605EBE80091E648 /* UIStackView+Extension.swift */; };
 		5BD89CAA25F617630065C517 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD89CA925F617630065C517 /* User.swift */; };
 		5BE1B8E625F89CA400E6E2AF /* FavouritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */; };
 		5BE1B8EE25FA0E7900E6E2AF /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE1B8ED25FA0E7900E6E2AF /* WebSocketManager.swift */; };
@@ -61,6 +63,8 @@
 		5B15ECA725EE31EA00058D09 /* StockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockCell.swift; sourceTree = "<group>"; };
 		5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		5B3F71D725F7640F006C6531 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		5B7525C12605E1EC0091E648 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
+		5B7525CF2605EBE80091E648 /* UIStackView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extension.swift"; sourceTree = "<group>"; };
 		5BD89CA925F617630065C517 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesViewController.swift; sourceTree = "<group>"; };
 		5BE1B8ED25FA0E7900E6E2AF /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
@@ -117,6 +121,7 @@
 			children = (
 				5B0E128125EE2C2000B66622 /* App */,
 				5B0E128425EE2C2C00B66622 /* Controllers */,
+				5B7525BD2605E1D00091E648 /* Extensions */,
 				5BF26AE925F0CC8100845C65 /* Managers */,
 				5B0E128225EE2C2400B66622 /* Models */,
 				5B0E128025EE2C0E00B66622 /* Resources */,
@@ -176,7 +181,6 @@
 			children = (
 				5B15ECA225EE30B700058D09 /* StocksView.swift */,
 				5B15ECA725EE31EA00058D09 /* StockCell.swift */,
-				5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -188,6 +192,16 @@
 				5BE1B8E525F89CA400E6E2AF /* FavouritesViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		5B7525BD2605E1D00091E648 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5B7525C12605E1EC0091E648 /* Double+Extension.swift */,
+				5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */,
+				5B7525CF2605EBE80091E648 /* UIStackView+Extension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		5BF26AE925F0CC8100845C65 /* Managers */ = {
@@ -330,9 +344,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B0E124F25EE2BD900B66622 /* StocksViewController.swift in Sources */,
+				5B7525D02605EBE80091E648 /* UIStackView+Extension.swift in Sources */,
 				5B3F71D825F7640F006C6531 /* DataManager.swift in Sources */,
 				5B0E124B25EE2BD900B66622 /* AppDelegate.swift in Sources */,
 				5BE1B8E625F89CA400E6E2AF /* FavouritesViewController.swift in Sources */,
+				5B7525C22605E1EC0091E648 /* Double+Extension.swift in Sources */,
 				5B15ECA825EE31EA00058D09 /* StockCell.swift in Sources */,
 				5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */,
 				5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */,

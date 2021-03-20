@@ -20,11 +20,10 @@ class WebSocketManager {
     
     func connectToWebSocket() {
         webSocketTask.resume()
-        self.listen()
-        self.sendRequest()
+        self.receiveData() {}
     }
     
-    func listen() {
+    func receiveData(completion: @escaping () -> Void) {
         webSocketTask.receive { [weak self] result in
             guard let self = self else { return }
             
@@ -42,7 +41,7 @@ class WebSocketManager {
             case .failure(let error):
                 print("Error in receiving message: \(error)")
             }
-            self.listen()
+            self.receiveData() {}
         }
     }
     
@@ -57,26 +56,45 @@ class WebSocketManager {
             return
         }
         
-        guard let lastPrice = data.first!["p"] as? Double else {
-            print(#line, #function, "Couldn't get current price from \(data)")
+        guard let lastPrice = data.first!["p"] as? Double, let ticker = data.first!["s"] as? String else {
+            print(#line, #function, "Couldn't get data from \(data)")
             return
         }
         
-        print(lastPrice)
+        print(ticker, lastPrice)
     }
     
-    func sendRequest() {
-        let message = ["type":"subscribe","symbol":"AAPL"]
-        do {
-            let data = try encoder.encode(message)
-            
-            self.webSocketTask.send(.data(data)) { err in
-                if err != nil {
-                    print(err.debugDescription)
+    func subscribeStocks(_ stocks: [Stock]) {
+        let message = stocks.map { ["type": "subscribe", "symbol": $0.ticker] }
+        for msg in message {
+            do {
+                let data = try encoder.encode(msg)
+                
+                self.webSocketTask.send(.data(data)) { err in
+                    if err != nil {
+                        print(err.debugDescription)
+                    }
                 }
+            } catch {
+                print(error)
             }
-        } catch {
-            print(error)
+        }
+    }
+    
+    func unsubscribeStocks(_ stocks: [Stock]) {
+        let message = stocks.map { ["type": "unsubscribe", "symbol": $0.ticker] }
+        for msg in message {
+            do {
+                let data = try encoder.encode(msg)
+                
+                self.webSocketTask.send(.data(data)) { err in
+                    if err != nil {
+                        print(err.debugDescription)
+                    }
+                }
+            } catch {
+                print(error)
+            }
         }
     }
 }

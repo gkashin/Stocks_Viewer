@@ -20,6 +20,7 @@ struct Constants {
     struct Fonts {
         static let headingFont = UIFont.systemFont(ofSize: 18)
         static let bodyFont = UIFont.systemFont(ofSize: 12)
+        static let bodyFontSmall = UIFont.systemFont(ofSize: 11)
     }
     
     struct Images {
@@ -59,11 +60,26 @@ extension StockCell {
         addOrRemoveFavouriteStockButton.tintColor = User.active.checkStock(stock) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
         tickerLabel.text = stock.ticker
         companyNameLabel.text = stock.companyName
-        companyNameLabel.font = Constants.Fonts.bodyFont
+        companyNameLabel.font = Constants.Fonts.bodyFontSmall
+        companyNameLabel.numberOfLines = 0
 
-        currentPriceLabel.text = "\(stock.currentPrice ?? 0)"
-//        let textColor = stock.priceChangePerDay < 0 ? Constants.Colors.redFont : Constants.Colors.greenFont
-//        priceChangePerDayLabel = UILabel(text: "\(String(describing: stock.priceChangePerDay))", textColor: textColor, font: Constants.Fonts.bodyFont)
+        currentPriceLabel.text = "\(stock.quote?.currentPrice ?? 0)"
+        let priceChange = stock.quote?.priceChangePerDay ?? 0
+        let previousClosePrice = stock.quote?.previousClosePrice ?? 0
+        
+        priceChangePerDayLabel.font = Constants.Fonts.bodyFont
+        let fraction: Double
+        if !previousClosePrice.isZero {
+            fraction = abs((priceChange / previousClosePrice).rounded(toPlaces: 2))
+        } else {
+            fraction = 0.0
+        }
+        
+        let priceChangeNonNegative = priceChange > 0.0 || priceChange.isZero
+        let priceChangeText = priceChangeNonNegative ? "+\(priceChange)" : "\(priceChange)"
+        let fractionText = " (\(fraction)%)"
+        priceChangePerDayLabel.text = priceChangeText + fractionText
+        priceChangePerDayLabel.textColor = priceChangeNonNegative ? Constants.Colors.greenFont : Constants.Colors.redFont
     }
 }
 
@@ -101,16 +117,24 @@ private extension StockCell {
         currentPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceChangePerDayLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        // Ticker Label
-        NSLayoutConstraint.activate([
-            tickerLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 14),
-            tickerLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 72),
-        ])
+        let tickerStackView = UIStackView(arrangedSubviews: [tickerLabel, addOrRemoveFavouriteStockButton], axis: .horizontal, spacing: 6)
+        let leftSideStackView = UIStackView(arrangedSubviews: [tickerStackView, companyNameLabel], axis: .vertical, spacing: 5)
+        leftSideStackView.translatesAutoresizingMaskIntoConstraints = false
+        leftSideStackView.alignment = .leading
+        contentView.addSubview(leftSideStackView)
         
-        // Company Name Label
+        // Ticker Label and Company Name Label
         NSLayoutConstraint.activate([
-            companyNameLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -14),
-            companyNameLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 72),
+            leftSideStackView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+            leftSideStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 72),
+        ])
+
+        // Price Change Per Day Label
+        priceChangePerDayLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        NSLayoutConstraint.activate([
+            priceChangePerDayLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -14),
+            priceChangePerDayLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -12),
+            priceChangePerDayLabel.leadingAnchor.constraint(equalTo: leftSideStackView.trailingAnchor, constant: 5),
         ])
         
         // Current Price Label
@@ -129,7 +153,7 @@ private extension StockCell {
     }
     
     func setupAddToFavouritesButton() {
-        contentView.addSubview(addOrRemoveFavouriteStockButton)
+//        contentView.addSubview(addOrRemoveFavouriteStockButton)
         setupAddToFavouritesButtonConstraints()
         addOrRemoveFavouriteStockButton.setImage(Constants.Images.star, for: .normal)
         addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.notFilledStar
@@ -138,11 +162,11 @@ private extension StockCell {
     }
     
     func setupAddToFavouritesButtonConstraints() {
-        addOrRemoveFavouriteStockButton.translatesAutoresizingMaskIntoConstraints = false
+//        addOrRemoveFavouriteStockButton.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            addOrRemoveFavouriteStockButton.centerYAnchor.constraint(equalTo: self.tickerLabel.centerYAnchor),
-            addOrRemoveFavouriteStockButton.leadingAnchor.constraint(equalTo: self.tickerLabel.trailingAnchor, constant: 6),
-        ])
+//        NSLayoutConstraint.activate([
+//            addOrRemoveFavouriteStockButton.centerYAnchor.constraint(equalTo: self.tickerLabel.centerYAnchor),
+//            addOrRemoveFavouriteStockButton.leadingAnchor.constraint(equalTo: self.tickerLabel.trailingAnchor, constant: 6),
+//        ])
     }
 }

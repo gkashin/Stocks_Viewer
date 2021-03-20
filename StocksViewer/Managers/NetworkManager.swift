@@ -19,6 +19,8 @@ final class NetworkManager {
     private let baseURL = URL(string: "https://finnhub.io/api/v1/")!
     private let apiKey = "c109iuf48v6t383m4pe0"
     
+    let decoder = JSONDecoder()
+    
     // MARK: Initializers
     private init() {}
 }
@@ -61,9 +63,7 @@ extension NetworkManager {
                 return completion(.failure())
             }
             
-            let jsonDecoder = JSONDecoder()
-            
-            guard let stocks = try? jsonDecoder.decode([Stock].self, from: data) else {
+            guard let stocks = try? self.decoder.decode([Stock].self, from: data) else {
                 print(#line, #function, "Couldn't decode data from \(data)")
                 return completion(.failure())
             }
@@ -108,17 +108,22 @@ extension NetworkManager {
                 return completion(.failure())
             }
             
-            guard let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String : Any] else {
+            guard let quote = try? self.decoder.decode(Quote.self, from: data) else {
                 print(#line, #function, "Couldn't decode data from \(data)")
                 return completion(.failure())
             }
             
-            guard let currentPrice = jsonDictionary[Stock.CodingKeys.currentPrice.rawValue] as? Double else {
-                print(#line, #function, "Couldn't get current price from \(jsonDictionary)")
-                return completion(.failure())
-            }
+//            guard let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String : Any] else {
+//                print(#line, #function, "Couldn't decode data from \(data)")
+//                return completion(.failure())
+//            }
+//
+//            guard let previousClosePrice = jsonDictionary[Stock.CodingKeys.previousClosePrice.rawValue] as? Double else {
+//                print(#line, #function, "Couldn't get previous close price from \(jsonDictionary)")
+//                return completion(.failure())
+//            }
             
-            completion(.success(data: currentPrice))
+            completion(.success(data: quote))
         }.resume()
     }
 }
