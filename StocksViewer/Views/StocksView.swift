@@ -25,10 +25,15 @@ final class StocksView: UIView {
 
 // MARK: - Public Methods
 extension StocksView {
-    func updateTable() {
+    func updateTable(completion: (() -> Void)? = nil) {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
+            completion?()
         }
+    }
+    
+    func getIndexPathsForVisibleRows() -> [IndexPath] {
+        return tableView.indexPathsForVisibleRows ?? []
     }
 }
 

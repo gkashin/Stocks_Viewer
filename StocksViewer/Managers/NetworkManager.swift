@@ -17,7 +17,6 @@ final class NetworkManager {
     // MARK: Stored Properties
     static let shared = NetworkManager()
     private let baseURL = URL(string: "https://finnhub.io/api/v1/")!
-    private let apiKey = "c109iuf48v6t383m4pe0"
     
     let decoder = JSONDecoder()
     
@@ -34,7 +33,7 @@ extension NetworkManager {
         
         urlComponents?.queryItems = [
             URLQueryItem(name: "exchange", value: "US"),
-            URLQueryItem(name: "token", value: apiKey),
+            URLQueryItem(name: "token", value: User.active.apiKey),
         ]
         
         guard let getStocksURLWithQuery = urlComponents?.url else {
@@ -79,7 +78,7 @@ extension NetworkManager {
         
         urlComponents?.queryItems = [
             URLQueryItem(name: "symbol", value: ticker),
-            URLQueryItem(name: "token", value: apiKey),
+            URLQueryItem(name: "token", value: User.active.apiKey),
         ]
         
         guard let getQuoteURLWithQuery = urlComponents?.url else {

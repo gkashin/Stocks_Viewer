@@ -9,22 +9,29 @@ import Foundation
 
 class WebSocketManager {
     static let shared = WebSocketManager()
-    private init(){}
     
     private var dataArray = [Stock]()
     
+    private let webSocketURL = URL(string: "wss://ws.finnhub.io?token=\(User.active.apiKey)")!
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     
-    private let webSocketTask = URLSession(configuration: .default).webSocketTask(with: URL(string: "wss://ws.finnhub.io?token=c109iuf48v6t383m4pe0")!)
+    private let session: URLSession
+    private var socket: URLSessionWebSocketTask!
     
-    func connectToWebSocket() {
-        webSocketTask.resume()
-        self.receiveData() {}
+    private init() {
+        self.session = URLSession(configuration: .default)
+        self.connect()
+    }
+    
+    func connect() {
+        socket = session.webSocketTask(with: webSocketURL)
+        receiveData() {}
+        socket.resume()
     }
     
     func receiveData(completion: @escaping () -> Void) {
-        webSocketTask.receive { [weak self] result in
+        socket.receive { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -65,12 +72,13 @@ class WebSocketManager {
     }
     
     func subscribeStocks(_ stocks: [Stock]) {
-        let message = stocks.map { ["type": "subscribe", "symbol": $0.ticker] }
-        for msg in message {
+//        let message = stocks.map { ["type": "subscribe", "symbol": $0.ticker] }
+        let msg = ["type": "subscribe", "symbol": "AAPL"]
+//        for msg in message {
             do {
                 let data = try encoder.encode(msg)
                 
-                self.webSocketTask.send(.data(data)) { err in
+                self.socket.send(.data(data)) { err in
                     if err != nil {
                         print(err.debugDescription)
                     }
@@ -78,7 +86,7 @@ class WebSocketManager {
             } catch {
                 print(error)
             }
-        }
+//        }
     }
     
     func unsubscribeStocks(_ stocks: [Stock]) {
@@ -87,7 +95,7 @@ class WebSocketManager {
             do {
                 let data = try encoder.encode(msg)
                 
-                self.webSocketTask.send(.data(data)) { err in
+                self.socket.send(.data(data)) { err in
                     if err != nil {
                         print(err.debugDescription)
                     }

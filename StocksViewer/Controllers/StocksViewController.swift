@@ -15,6 +15,11 @@ struct StocksViewControllerConstants {
 
 class StocksViewController: UIViewController {
     
+    private let searchController = UISearchController()
+    private var filteredStocks = [Stock]()
+    private var isFiltered: Bool {
+        return searchController.isActive
+    }
     var stocks = [Stock]()
     var stocksView: StocksView!
     
@@ -32,6 +37,8 @@ class StocksViewController: UIViewController {
         super.viewDidLoad()
         loadStocks()
         setupUI()
+        
+        WebSocketManager.shared.subscribeStocks(stocks)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,8 +62,9 @@ class StocksViewController: UIViewController {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
                 self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker })[...20])
-                self.stocksView.updateTable()
-                self.loadQuotes()
+                self.stocksView.updateTable() {
+                    self.loadQuotes()
+                }
             case .failure(error: let error):
                 print(error?.localizedDescription ?? "")
             }
@@ -75,32 +83,59 @@ class StocksViewController: UIViewController {
     }
     
     func loadQuotes() {
-//        WebSocketManager.shared.connectToWebSocket()
+        let indexPaths = stocksView.getIndexPathsForVisibleRows()
+        let downloadGroup = DispatchGroup()
+        for indexPath in indexPaths {
+            let stock = stocks[indexPath.row]
+            
+            downloadGroup.enter()
+            NetworkManager.shared.getQuote(byTicker: stock.ticker) { [weak self] result in
+                switch result {
+                case .success(data: let data):
+                    if let quote = data as? Quote {
+                        self?.stocks[indexPath.row].quote = quote
+                    }
+                case .failure(error: let error):
+                    print(error?.localizedDescription ?? "")
+                }
+                downloadGroup.leave()
+            }
+        }
         
-        
-        for (index, stock) in stocks.enumerated() {
-//            NetworkManager.shared.getQuote(byTicker: stock.ticker) { result in
-//                switch result {
-//                case .success(data: let data):
-//                    guard let currentPrice = data as? Decimal else { return }
-//                    self.stocks[index].currentPrice = currentPrice
-//                    if index % 10 == 0 {
-//                        self.stocksView.updateTable()
-//                    }
-//                case .failure(error: let error):
-//                    print(error?.localizedDescription ?? "")
-//                }
-//            }
+        downloadGroup.notify(queue: DispatchQueue.main) { [weak self] in
+            self?.stocksView.updateTable()
         }
     }
 }
 
 // MARK: - Private Methods
 // MARK: UI
-extension StocksViewController {
+private extension StocksViewController {
     func setupUI() {
         view.backgroundColor = Constants.Colors.background
+        setupNavigationBar()
+    }
+    
+    func setupNavigationBar() {
         setupTitle()
+        setupSearchController()
+    }
+    
+    func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+    }
+    
+    func filterContentForSearchText(_ searchText: String) {
+        filteredStocks = stocks
+        if !searchText.isEmpty {
+            filteredStocks = stocks.filter { $0.companyName.lowercased().contains(searchText.lowercased()) || $0.ticker.lowercased().contains(searchText.lowercased()) }
+        }
+        stocksView.updateTable()
     }
 }
 
@@ -109,6 +144,13 @@ private extension StocksViewController {
     @objc func favouritesBarButtonTapped() {
         let favouritesVC = FavouritesViewController()
         navigationController?.pushViewController(favouritesVC, animated: true)
+    }
+}
+
+extension StocksViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        filterContentForSearchText(searchBar.text!)
     }
 }
 
@@ -138,7 +180,7 @@ extension StocksViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 extension StocksViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return stocks.count
+        return isFiltered ? filteredStocks.count : stocks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -146,7 +188,14 @@ extension StocksViewController: UITableViewDataSource {
         guard let stockCell = cell as? StockCell else { return cell }
         // Configure cell with stock
         let index = indexPath.row
-        stockCell.configure(withStock: stocks[index], index: index, addOrRemoveFavouriteStockAction: addOrRemoveFavouriteStock)
+        
+        var stock: Stock
+        if isFiltered {
+            stock = filteredStocks[index]
+        } else {
+            stock = stocks[index]
+        }
+        stockCell.configure(withStock: stock, index: index, addOrRemoveFavouriteStockAction: addOrRemoveFavouriteStock)
         
         return stockCell
     }

@@ -9,6 +9,7 @@ import Foundation
 
 final class User {
     static let active = User()
+    let apiKey = "c1cq1fv48v6vagf170jg"
     
     private(set) var favouriteStocks = Set<Stock>() {
         didSet {
