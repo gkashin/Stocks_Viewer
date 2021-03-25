@@ -72,9 +72,8 @@ class WebSocketManager {
     }
     
     func subscribeStocks(_ stocks: [Stock]) {
-//        let message = stocks.map { ["type": "subscribe", "symbol": $0.ticker] }
-        let msg = ["type": "subscribe", "symbol": "AAPL"]
-//        for msg in message {
+        let message = stocks.map { ["type": "subscribe", "symbol": $0.ticker] }
+        for msg in message {
             do {
                 let data = try encoder.encode(msg)
                 
@@ -86,7 +85,7 @@ class WebSocketManager {
             } catch {
                 print(error)
             }
-//        }
+        }
     }
     
     func unsubscribeStocks(_ stocks: [Stock]) {

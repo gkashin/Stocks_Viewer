@@ -16,8 +16,8 @@ struct StocksViewControllerConstants {
 class StocksViewController: UIViewController {
     
     private let searchController = UISearchController()
-    private var filteredStocks = [Stock]()
-    private var isFiltered: Bool {
+    var filteredStocks = [Stock]()
+    var isFiltered: Bool {
         return searchController.isActive
     }
     var stocks = [Stock]()
@@ -35,10 +35,8 @@ class StocksViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadStocks()
         setupUI()
-        
-        WebSocketManager.shared.subscribeStocks(stocks)
+        loadStocks()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,9 +59,9 @@ class StocksViewController: UIViewController {
             switch result {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
-                self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker })[...20])
+                self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker }))
                 self.stocksView.updateTable() {
-                    self.loadQuotes()
+                    self.loadQuotes(onlyVisible: true)
                 }
             case .failure(error: let error):
                 print(error?.localizedDescription ?? "")
@@ -73,7 +71,7 @@ class StocksViewController: UIViewController {
     
     func addOrRemoveFavouriteStock(index: Int) {
         print(#line, #function, index)
-        let stock = stocks[index]
+        let stock = getStock(at: index)
         
         if User.active.checkStock(stock) {
             User.active.removeStockFromFavourites(stock)
@@ -82,18 +80,38 @@ class StocksViewController: UIViewController {
         }
     }
     
-    func loadQuotes() {
-        let indexPaths = stocksView.getIndexPathsForVisibleRows()
+    func getStock(at index: Int) -> Stock {
+        var stock: Stock
+        if isFiltered {
+            stock = filteredStocks[index]
+        } else {
+            stock = stocks[index]
+        }
+        return stock
+    }
+    
+    func loadQuotes(onlyVisible: Bool) {
+        var indexes: [Int]
+        if onlyVisible {
+            indexes = self.stocksView.getIndexesForVisibleRows()
+        } else {
+            indexes = Array(0..<stocks.count)
+        }
+        
         let downloadGroup = DispatchGroup()
-        for indexPath in indexPaths {
-            let stock = stocks[indexPath.row]
+        for index in indexes {
+            let stock = stocks[index]
             
             downloadGroup.enter()
             NetworkManager.shared.getQuote(byTicker: stock.ticker) { [weak self] result in
                 switch result {
                 case .success(data: let data):
                     if let quote = data as? Quote {
-                        self?.stocks[indexPath.row].quote = quote
+                        // Check if the stock still exists
+                        let indexOfStock = self?.stocks.firstIndex(of: stock)
+                        if indexOfStock != nil {
+                            self?.stocks[indexOfStock!].quote = quote
+                        }
                     }
                 case .failure(error: let error):
                     print(error?.localizedDescription ?? "")
@@ -101,7 +119,6 @@ class StocksViewController: UIViewController {
                 downloadGroup.leave()
             }
         }
-        
         downloadGroup.notify(queue: DispatchQueue.main) { [weak self] in
             self?.stocksView.updateTable()
         }
@@ -135,6 +152,7 @@ private extension StocksViewController {
         if !searchText.isEmpty {
             filteredStocks = stocks.filter { $0.companyName.lowercased().contains(searchText.lowercased()) || $0.ticker.lowercased().contains(searchText.lowercased()) }
         }
+        
         stocksView.updateTable()
     }
 }

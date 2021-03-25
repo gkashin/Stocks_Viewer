@@ -31,9 +31,10 @@ extension StocksView {
             completion?()
         }
     }
-    
-    func getIndexPathsForVisibleRows() -> [IndexPath] {
-        return tableView.indexPathsForVisibleRows ?? []
+
+    func getIndexesForVisibleRows() -> [Int] {
+        let indexPaths = tableView.indexPathsForVisibleRows ?? []
+        return indexPaths.map { $0.row }
     }
 }
 
