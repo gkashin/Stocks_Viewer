@@ -14,7 +14,7 @@ final class FavouritesViewController: StocksViewController {
     
     override func loadStocks() {
         stocks = Array(User.active.favouriteStocks)
-        self.loadQuotes(onlyVisible: false)
+        self.loadQuotes(byIndexes: Array(0..<numberOfVisibleStocks))
         
         WebSocketManager.shared.subscribeStocks(stocks)
     }

@@ -10,7 +10,9 @@ import UIKit
 struct StocksViewControllerConstants {
     static let title = "Stocks"
     static let favouritesBarButtonTitle = "Favourites"
+    static let searchBarPlaceholder = "Find company or ticker"
     static let cellHeight: CGFloat = 68
+    static let initialNumberOfVisibleStocks = 20
 }
 
 class StocksViewController: UIViewController {
@@ -22,11 +24,18 @@ class StocksViewController: UIViewController {
     }
     var stocks = [Stock]()
     var stocksView: StocksView!
-    
+    private var actualStocksCount: Int {
+        return isFiltered ? filteredStocks.count : stocks.count
+    }
+    var numberOfVisibleStocks: Int {
+        return min(actualStocksCount, StocksViewControllerConstants.initialNumberOfVisibleStocks * factorForNumberOfVisibleStocks)
+    }
+    private var factorForNumberOfVisibleStocks = 1
+
     // MARK: Initializers
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        stocksView = StocksView(viewController: self)
+        stocksView = StocksView(viewController: self, showMoreStocksAction: showMoreStocks)
     }
     
     required init?(coder: NSCoder) {
@@ -37,6 +46,9 @@ class StocksViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         loadStocks()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,7 +73,8 @@ class StocksViewController: UIViewController {
                 guard let stocks = data as? [Stock] else { return }
                 self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker }))
                 self.stocksView.updateTable() {
-                    self.loadQuotes(onlyVisible: true)
+                    let indexes = Array(0..<self.numberOfVisibleStocks)
+                    self.loadQuotes(byIndexes: indexes)
                 }
             case .failure(error: let error):
                 print(error?.localizedDescription ?? "")
@@ -80,6 +93,18 @@ class StocksViewController: UIViewController {
         }
     }
     
+    func showMoreStocks() {
+        if numberOfVisibleStocks < actualStocksCount {
+            factorForNumberOfVisibleStocks += 1
+            print(#line, #function)
+            let oldNumberOfVisibleStocks = numberOfVisibleStocks - StocksViewControllerConstants.initialNumberOfVisibleStocks
+            let indexes = Array(oldNumberOfVisibleStocks..<numberOfVisibleStocks)
+            stocksView.updateTable() {
+                self.loadQuotes(byIndexes: indexes)
+            }
+        }
+    }
+    
     func getStock(at index: Int) -> Stock {
         var stock: Stock
         if isFiltered {
@@ -90,14 +115,7 @@ class StocksViewController: UIViewController {
         return stock
     }
     
-    func loadQuotes(onlyVisible: Bool) {
-        var indexes: [Int]
-        if onlyVisible {
-            indexes = self.stocksView.getIndexesForVisibleRows()
-        } else {
-            indexes = Array(0..<stocks.count)
-        }
-        
+    func loadQuotes(byIndexes indexes: [Int]) {
         let downloadGroup = DispatchGroup()
         for index in indexes {
             let stock = stocks[index]
@@ -120,6 +138,7 @@ class StocksViewController: UIViewController {
             }
         }
         downloadGroup.notify(queue: DispatchQueue.main) { [weak self] in
+            // Maybe reload rows only
             self?.stocksView.updateTable()
         }
     }
@@ -141,7 +160,7 @@ private extension StocksViewController {
     func setupSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.placeholder = StocksViewControllerConstants.searchBarPlaceholder
         
         navigationItem.searchController = searchController
         definesPresentationContext = true
@@ -162,6 +181,17 @@ private extension StocksViewController {
     @objc func favouritesBarButtonTapped() {
         let favouritesVC = FavouritesViewController()
         navigationController?.pushViewController(favouritesVC, animated: true)
+    }
+    
+    // Observers
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        stocksView.updateTableViewInsets(with: insets)
+    }
+    
+    @objc func keyboardWillHide() {
+        stocksView.updateTableViewInsets(with: .zero)
     }
 }
 
@@ -198,7 +228,7 @@ extension StocksViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 extension StocksViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isFiltered ? filteredStocks.count : stocks.count
+        return numberOfVisibleStocks
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -207,12 +237,7 @@ extension StocksViewController: UITableViewDataSource {
         // Configure cell with stock
         let index = indexPath.row
         
-        var stock: Stock
-        if isFiltered {
-            stock = filteredStocks[index]
-        } else {
-            stock = stocks[index]
-        }
+        let stock = getStock(at: index)
         stockCell.configure(withStock: stock, index: index, addOrRemoveFavouriteStockAction: addOrRemoveFavouriteStock)
         
         return stockCell

@@ -12,6 +12,7 @@ struct Constants {
         static let blackFont = #colorLiteral(red: 0.1019607843, green: 0.1019607843, blue: 0.1019607843, alpha: 1)
         static let greenFont = #colorLiteral(red: 0.1411764706, green: 0.6980392157, blue: 0.3647058824, alpha: 1)
         static let redFont = #colorLiteral(red: 0.6980392157, green: 0.1411764706, blue: 0.1411764706, alpha: 1)
+        static let grayFont = UIColor.systemGray
         static let background = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         static let filledStar = UIColor.systemYellow
         static let notFilledStar = UIColor.systemGray
@@ -26,6 +27,8 @@ struct Constants {
     struct Images {
         static let star = UIImage(systemName: "star.fill")
     }
+    
+    static let dollarSign = "$"
 }
 
 final class StockCell: UITableViewCell {
@@ -63,7 +66,7 @@ extension StockCell {
         companyNameLabel.font = Constants.Fonts.bodyFontSmall
         companyNameLabel.numberOfLines = 0
 
-        currentPriceLabel.text = "\(stock.quote?.currentPrice ?? 0)"
+        currentPriceLabel.text = Constants.dollarSign + "\(stock.quote?.currentPrice ?? 0)"
         let priceChange = stock.quote?.priceChangePerDay ?? 0
         let previousClosePrice = stock.quote?.previousClosePrice ?? 0
         
@@ -75,11 +78,17 @@ extension StockCell {
             fraction = 0.0
         }
         
-        let priceChangeNonNegative = priceChange > 0.0 || priceChange.isZero
-        let priceChangeText = priceChangeNonNegative ? "+\(priceChange)" : "\(priceChange)"
+        var priceChangeText: String
+        if priceChange.isZero {
+            priceChangePerDayLabel.textColor = Constants.Colors.grayFont
+            priceChangeText = "\(abs(priceChange))"
+        } else {
+            let priceChangePositive = priceChange > 0.0
+            priceChangePerDayLabel.textColor = priceChangePositive ? Constants.Colors.greenFont : Constants.Colors.redFont
+            priceChangeText = (priceChangePositive ? "+" : "-") + Constants.dollarSign + "\(abs(priceChange))"
+        }
         let fractionText = " (\(fraction)%)"
         priceChangePerDayLabel.text = priceChangeText + fractionText
-        priceChangePerDayLabel.textColor = priceChangeNonNegative ? Constants.Colors.greenFont : Constants.Colors.redFont
     }
 }
 
@@ -153,20 +162,9 @@ private extension StockCell {
     }
     
     func setupAddToFavouritesButton() {
-//        contentView.addSubview(addOrRemoveFavouriteStockButton)
-        setupAddToFavouritesButtonConstraints()
         addOrRemoveFavouriteStockButton.setImage(Constants.Images.star, for: .normal)
         addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.notFilledStar
         
         addOrRemoveFavouriteStockButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
-    }
-    
-    func setupAddToFavouritesButtonConstraints() {
-//        addOrRemoveFavouriteStockButton.translatesAutoresizingMaskIntoConstraints = false
-        
-//        NSLayoutConstraint.activate([
-//            addOrRemoveFavouriteStockButton.centerYAnchor.constraint(equalTo: self.tickerLabel.centerYAnchor),
-//            addOrRemoveFavouriteStockButton.leadingAnchor.constraint(equalTo: self.tickerLabel.trailingAnchor, constant: 6),
-//        ])
     }
 }
