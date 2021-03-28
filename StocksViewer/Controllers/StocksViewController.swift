@@ -74,6 +74,7 @@ class StocksViewController: UIViewController {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
                 self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker }))
+                print(#line, #function, stocks.count)
                 self.stocksView.updateTable() {
                     let indexes = Array(0..<self.numberOfVisibleStocks)
                     self.loadQuotes(byIndexes: indexes)

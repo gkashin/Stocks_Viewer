@@ -17,11 +17,14 @@ final class NetworkManager {
     // MARK: Stored Properties
     static let shared = NetworkManager()
     private let baseURL = URL(string: "https://finnhub.io/api/v1/")!
+    var session: URLSessionProtocol!
     
     let decoder = JSONDecoder()
     
     // MARK: Initializers
-    private init() {}
+    private init(session: URLSessionProtocol = URLSession(configuration: .default)) {
+        self.session = session
+    }
 }
 
 // MARK: - Stocks GET
@@ -44,7 +47,7 @@ extension NetworkManager {
         var request = URLRequest(url: getStocksURLWithQuery)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { data, response, error in
             let httpResponse = response as? HTTPURLResponse
             
             guard error == nil else {
@@ -89,7 +92,7 @@ extension NetworkManager {
         var request = URLRequest(url: getImageURLWithQuery)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { data, response, error in
             let httpResponse = response as? HTTPURLResponse
             
             guard error == nil else {
@@ -138,7 +141,7 @@ extension NetworkManager {
         var request = URLRequest(url: getQuoteURLWithQuery)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { data, response, error in
             let httpResponse = response as? HTTPURLResponse
             
             guard error == nil else {
