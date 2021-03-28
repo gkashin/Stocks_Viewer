@@ -12,7 +12,7 @@ struct StocksViewControllerConstants {
     static let favouritesBarButtonTitle = "Favourites"
     static let searchBarPlaceholder = "Find company or ticker"
     static let cellHeight: CGFloat = 68
-    static let initialNumberOfVisibleStocks = 20
+    static let initialNumberOfVisibleStocks = 5
 }
 
 class StocksViewController: UIViewController {
@@ -30,12 +30,13 @@ class StocksViewController: UIViewController {
     var numberOfVisibleStocks: Int {
         return min(actualStocksCount, StocksViewControllerConstants.initialNumberOfVisibleStocks * factorForNumberOfVisibleStocks)
     }
+    // Remove factor
     private var factorForNumberOfVisibleStocks = 1
 
     // MARK: Initializers
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        stocksView = StocksView(viewController: self, showMoreStocksAction: showMoreStocks)
+        stocksView = StocksView(viewController: self, showMoreStocksAction: showMoreStocks, hideStocksAction: hideStocks)
     }
     
     required init?(coder: NSCoder) {
@@ -53,6 +54,7 @@ class StocksViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Maybe only update certain rows
         stocksView.updateTable()
     }
     
@@ -95,14 +97,20 @@ class StocksViewController: UIViewController {
     
     func showMoreStocks() {
         if numberOfVisibleStocks < actualStocksCount {
+            let oldNumberOfVisibleStocks = numberOfVisibleStocks
             factorForNumberOfVisibleStocks += 1
             print(#line, #function)
-            let oldNumberOfVisibleStocks = numberOfVisibleStocks - StocksViewControllerConstants.initialNumberOfVisibleStocks
             let indexes = Array(oldNumberOfVisibleStocks..<numberOfVisibleStocks)
             stocksView.updateTable() {
                 self.loadQuotes(byIndexes: indexes)
             }
         }
+    }
+    
+    func hideStocks() {
+        print(#line, #function)
+        factorForNumberOfVisibleStocks = 1
+        stocksView.updateTable()
     }
     
     func getStock(at index: Int) -> Stock {
@@ -142,6 +150,34 @@ class StocksViewController: UIViewController {
             self?.stocksView.updateTable()
         }
     }
+    
+//    func loadImages(byIndexes indexes: [Int]) {
+//        let downloadGroup = DispatchGroup()
+//        for index in indexes {
+//            let stock = stocks[index]
+//
+//            downloadGroup.enter()
+//            NetworkManager.shared.getImage(byTicker: stock.ticker) { [weak self] result in
+//                switch result {
+//                case .success(data: let data):
+//                    if let quote = data as? Quote {
+//                        // Check if the stock still exists
+//                        let indexOfStock = self?.stocks.firstIndex(of: stock)
+//                        if indexOfStock != nil {
+//                            self?.stocks[indexOfStock!].quote = quote
+//                        }
+//                    }
+//                case .failure(error: let error):
+//                    print(error?.localizedDescription ?? "")
+//                }
+//                downloadGroup.leave()
+//            }
+//        }
+//        downloadGroup.notify(queue: DispatchQueue.main) { [weak self] in
+//            // Maybe reload rows only
+//            self?.stocksView.updateTable()
+//        }
+//    }
 }
 
 // MARK: - Private Methods
@@ -195,6 +231,7 @@ private extension StocksViewController {
     }
 }
 
+// MARK: - UISearchResultsUpdating
 extension StocksViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar

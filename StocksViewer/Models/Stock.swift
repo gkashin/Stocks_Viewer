@@ -5,7 +5,7 @@
 //  Created by Георгий Кашин on 02.03.2021.
 //
 
-import Foundation
+import UIKit
 
 class Quote: Codable {
     var previousClosePrice: Double!

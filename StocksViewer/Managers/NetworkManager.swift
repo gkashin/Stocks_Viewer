@@ -71,6 +71,55 @@ extension NetworkManager {
         }.resume()
     }
     
+    func getImage(byTicker ticker: String, completion: @escaping (Result) -> Void) {
+        let getImageURL = baseURL.appendingPathComponent("stock/profile2")
+        
+        var urlComponents = URLComponents(url: getImageURL, resolvingAgainstBaseURL: true)
+        
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "symbol", value: ticker),
+            URLQueryItem(name: "token", value: User.active.apiKey),
+        ]
+        
+        guard let getImageURLWithQuery = urlComponents?.url else {
+            print(#line, #function, "Failed to form url with query")
+            return completion(.failure())
+        }
+        
+        var request = URLRequest(url: getImageURLWithQuery)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let httpResponse = response as? HTTPURLResponse
+            
+            guard error == nil else {
+                print(#line, #function, error!.localizedDescription)
+                return completion(.failure(error: error!))
+            }
+            
+            guard httpResponse?.statusCode == 200 else {
+                print(#line, #function, "Failed with response code \(String(describing: httpResponse?.statusCode))")
+                return completion(.failure())
+            }
+            
+            guard let data = data else {
+                print(#line, #function, "Couldn't get data from \(getImageURLWithQuery)")
+                return completion(.failure())
+            }
+            
+            guard let image = UIImage(data: data) else {
+                print(#line, #function, "Couldn't get image from \(data)")
+                return completion(.failure())
+            }
+//            guard let image = try? self.decoder.decode(.self, from: data) else {
+//                print(#line, #function, "Couldn't decode data from \(data)")
+//                return completion(.failure())
+//            }
+            
+            completion(.success(data: image))
+        }.resume()
+    }
+    
     func getQuote(byTicker ticker: String, completion: @escaping (Result) -> Void) {
         let getQuoteURL = baseURL.appendingPathComponent("quote")
         
@@ -111,16 +160,6 @@ extension NetworkManager {
                 print(#line, #function, "Couldn't decode data from \(data)")
                 return completion(.failure())
             }
-            
-//            guard let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String : Any] else {
-//                print(#line, #function, "Couldn't decode data from \(data)")
-//                return completion(.failure())
-//            }
-//
-//            guard let previousClosePrice = jsonDictionary[Stock.CodingKeys.previousClosePrice.rawValue] as? Double else {
-//                print(#line, #function, "Couldn't get previous close price from \(jsonDictionary)")
-//                return completion(.failure())
-//            }
             
             completion(.success(data: quote))
         }.resume()
