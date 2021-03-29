@@ -30,6 +30,7 @@ class StocksViewController: UIViewController {
     var isFiltered: Bool {
         return searchController.isActive
     }
+    // Number of stocks that are visible at the table
     var numberOfVisibleStocks: Int {
         return min(actualStocksCount, StocksViewControllerConstants.initialNumberOfVisibleStocks * factorForNumberOfVisibleStocks)
     }
@@ -91,11 +92,12 @@ class StocksViewController: UIViewController {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
                 self.stocks = Array(stocks.sorted(by: { $0.ticker < $1.ticker }))
-                print(#line, #function, stocks.count)
                 
                 self.stocksView.reloadTable() {
+                    // Hide footer and header if table view is empty
                     self.changeHeaderAndFooterViewsHiddenProperty()
                     let indexes = Array(0..<self.numberOfVisibleStocks)
+                    // Load quotes for stocks
                     self.loadQuotes(byIndexes: indexes)
                 }
             case .failure(error: let error):
@@ -109,6 +111,7 @@ class StocksViewController: UIViewController {
     func addOrRemoveFavouriteStock(index: Int) {
         guard let stock = getStock(at: index) else { return }
     
+        // If stock in favourites
         if User.current.checkStock(stock) {
             WebSocketManager.shared.unsubscribeStocks([stock])
             User.current.removeStockFromFavourites(stock)
@@ -155,6 +158,7 @@ private extension StocksViewController {
 // MARK: Actions
 private extension StocksViewController {
     func hideStocks() {
+        // Reset factor to one
         factorForNumberOfVisibleStocks = 1
         stocksView.reloadTable()
     }
@@ -162,6 +166,7 @@ private extension StocksViewController {
     func showMoreStocks() {
         if numberOfVisibleStocks < actualStocksCount {
             let oldNumberOfVisibleStocks = numberOfVisibleStocks
+            // Increment factor by one
             factorForNumberOfVisibleStocks += 1
             let indexes = Array(oldNumberOfVisibleStocks..<numberOfVisibleStocks)
             stocksView.reloadTable() {
@@ -191,15 +196,8 @@ private extension StocksViewController {
 // MARK: UISearchResultsUpdating
 extension StocksViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(updateSearch), object: nil)
-        self.perform(#selector(updateSearch), with: nil, afterDelay: 0.5)
-    }
-    
-    @objc func updateSearch() {
         guard let searchText = searchController.searchBar.text else { return }
         filterContentForSearchText(searchText)
-        let indexes = Array(0..<self.numberOfVisibleStocks)
-        loadQuotes(byIndexes: indexes)
     }
 }
 
@@ -223,7 +221,7 @@ extension StocksViewController {
     func loadQuotes(byIndexes indexes: [Int]) {
         let downloadGroup = DispatchGroup()
         for index in indexes {
-            guard let stock = getStock(at: index) else { continue }
+            let stock = stocks[index]
             
             downloadGroup.enter()
             NetworkManager.shared.getQuote(byTicker: stock.ticker) { [weak self] result in
@@ -235,16 +233,9 @@ extension StocksViewController {
                 case .success(data: let data):
                     if let quote = data as? Quote {
                         // Check if the stock still exists
-                        if self.isFiltered {
-                            let indexOfStock = self.filteredStocks.firstIndex(of: stock)
-                            if indexOfStock != nil {
-                                self.filteredStocks[indexOfStock!].quote = quote
-                            }
-                        } else {
-                            let indexOfStock = self.stocks.firstIndex(of: stock)
-                            if indexOfStock != nil {
-                                self.stocks[indexOfStock!].quote = quote
-                            }
+                        let indexOfStock = self.stocks.firstIndex(of: stock)
+                        if indexOfStock != nil {
+                            self.stocks[indexOfStock!].quote = quote
                         }
                     }
                 case .failure(error: let error):
@@ -258,34 +249,6 @@ extension StocksViewController {
             self?.stocksView.reloadTable()
         }
     }
-    
-    //    func loadImages(byIndexes indexes: [Int]) {
-    //        let downloadGroup = DispatchGroup()
-    //        for index in indexes {
-    //            let stock = stocks[index]
-    //
-    //            downloadGroup.enter()
-    //            NetworkManager.shared.getImage(byTicker: stock.ticker) { [weak self] result in
-    //                switch result {
-    //                case .success(data: let data):
-    //                    if let quote = data as? Quote {
-    //                        // Check if the stock still exists
-    //                        let indexOfStock = self?.stocks.firstIndex(of: stock)
-    //                        if indexOfStock != nil {
-    //                            self?.stocks[indexOfStock!].quote = quote
-    //                        }
-    //                    }
-    //                case .failure(error: let error):
-    //                    print(error?.localizedDescription ?? "")
-    //                }
-    //                downloadGroup.leave()
-    //            }
-    //        }
-    //        downloadGroup.notify(queue: DispatchQueue.main) { [weak self] in
-    //            // Maybe reload rows only
-    //            self?.stocksView.reloadTable()
-    //        }
-    //    }
 }
 
 // MARK: UITableViewDelegate

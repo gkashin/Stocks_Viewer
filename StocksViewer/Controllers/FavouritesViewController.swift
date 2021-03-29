@@ -16,6 +16,7 @@ final class FavouritesViewController: StocksViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // Suspend websocket task
         WebSocketManager.shared.stopUpdating()
     }
     
@@ -51,13 +52,14 @@ final class FavouritesViewController: StocksViewController {
     // MARK: Networks
     override func loadStocks() {
         stocks = Array(User.current.favouriteStocks)
+        // Resume websocket
         WebSocketManager.shared.resumeUpdating()
+        // Get data via websocket
         WebSocketManager.shared.receiveData { [weak self] quoteInfo in
             if let self = self, quoteInfo != nil {
-                print(#line, #function, quoteInfo!["ticker"], quoteInfo!["lastPrice"])
-
                 let ticker = quoteInfo!["ticker"] as! String
                 let lastPrice = quoteInfo!["lastPrice"] as! Double
+                // Update stock with last price
                 if let index = self.stocks.firstIndex(where: { $0.ticker == ticker }) {
                     self.stocks[index].quote?.currentPrice = lastPrice
                     self.stocksView.reloadRow(at: index)
@@ -65,6 +67,7 @@ final class FavouritesViewController: StocksViewController {
             }
         }
         
+        // Subscribe for stocks
         WebSocketManager.shared.subscribeStocks(stocks)
         self.loadQuotes(byIndexes: Array(0..<numberOfVisibleStocks))
     }

@@ -65,7 +65,7 @@ extension StocksViewerUITests {
         app.buttons["Show more"].tap()
         
         // Then
-        XCTAssertTrue(app.cells.count == 10)
+        XCTAssertTrue(app.cells.count == 20)
     }
     
     func testHideButton() throws {
@@ -79,7 +79,7 @@ extension StocksViewerUITests {
         app.buttons["Hide"].tap()
         
         // Then
-        XCTAssertTrue(app.cells.count == 5)
+        XCTAssertTrue(app.cells.count == 10)
     }
 }
 
