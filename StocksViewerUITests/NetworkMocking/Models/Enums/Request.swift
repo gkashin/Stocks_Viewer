@@ -28,7 +28,7 @@ enum Request: Hashable {
     var parameters: Parameters {
         switch self {
         case .downloadStocks:
-            return .url(["exchange": "US", "token": User.active.apiKey])
+            return .url(["exchange": "US", "token": User.current.apiKey])
         }
     }
     

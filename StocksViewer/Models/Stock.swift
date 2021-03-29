@@ -23,7 +23,7 @@ class Quote: Codable {
 class Stock: Codable {
     private(set) var ticker: String!
     private(set) var companyName: String!
-    var quote: Quote!
+    var quote: Quote?
 }
 
 // MARK: Hashable

@@ -8,7 +8,9 @@
 import Foundation
 
 final class User {
-    static let active = User()
+    
+    // MARK: Stored Properties
+    static let current = User()
     let apiKey = "c1cq1fv48v6vagf170jg"
     
     private(set) var favouriteStocks = Set<Stock>() {
@@ -17,11 +19,15 @@ final class User {
         }
     }
     
+    
+    // MARK: Initializers
     private init() {
         let stocks = DataManager.getStocks()
         favouriteStocks = Set(stocks)
     }
 
+    
+    // MARK: Actions with Stocks
     func addStockToFavourites(_ stock: Stock) {
         favouriteStocks.insert(stock)
     }

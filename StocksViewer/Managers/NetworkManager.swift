@@ -36,7 +36,7 @@ extension NetworkManager {
         
         urlComponents?.queryItems = [
             URLQueryItem(name: "exchange", value: "US"),
-            URLQueryItem(name: "token", value: User.active.apiKey),
+            URLQueryItem(name: "token", value: User.current.apiKey),
         ]
         
         guard let getStocksURLWithQuery = urlComponents?.url else {
@@ -81,7 +81,7 @@ extension NetworkManager {
         
         urlComponents?.queryItems = [
             URLQueryItem(name: "symbol", value: ticker),
-            URLQueryItem(name: "token", value: User.active.apiKey),
+            URLQueryItem(name: "token", value: User.current.apiKey),
         ]
         
         guard let getImageURLWithQuery = urlComponents?.url else {
@@ -130,7 +130,7 @@ extension NetworkManager {
         
         urlComponents?.queryItems = [
             URLQueryItem(name: "symbol", value: ticker),
-            URLQueryItem(name: "token", value: User.active.apiKey),
+            URLQueryItem(name: "token", value: User.current.apiKey),
         ]
         
         guard let getQuoteURLWithQuery = urlComponents?.url else {

@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct Constants {
+struct StockCellConstants {
     struct Colors {
         static let blackFont = #colorLiteral(red: 0.1019607843, green: 0.1019607843, blue: 0.1019607843, alpha: 1)
         static let greenFont = #colorLiteral(red: 0.1411764706, green: 0.6980392157, blue: 0.3647058824, alpha: 1)
@@ -27,16 +27,19 @@ struct Constants {
     struct Images {
         static let star = UIImage(systemName: "star.fill")
     }
-    
+
     static let dollarSign = "$"
 }
 
 final class StockCell: UITableViewCell {
+    
+    // MARK: Stored Properties
     static let identifier = "StockCellId"
     
     private var addOrRemoveFavouriteStockAction: ((Int) -> Void)?
     
     private var stock = Stock()
+    
     private var tickerLabel = UILabel()
     private var companyNameLabel = UILabel()
     private var currentPriceLabel = UILabel()
@@ -44,9 +47,10 @@ final class StockCell: UITableViewCell {
     
     private var addOrRemoveFavouriteStockButton = UIButton()
     
+    
+    // MARK: Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-    
         setupUI()
     }
     
@@ -59,36 +63,61 @@ final class StockCell: UITableViewCell {
 extension StockCell {
     func configure(withStock stock: Stock, index: Int, addOrRemoveFavouriteStockAction: @escaping (Int) -> (Void)) {
         self.addOrRemoveFavouriteStockAction = addOrRemoveFavouriteStockAction
+        
+        // Buttons
         addOrRemoveFavouriteStockButton.tag = index
-        addOrRemoveFavouriteStockButton.tintColor = User.active.checkStock(stock) ? Constants.Colors.filledStar : Constants.Colors.notFilledStar
+        addOrRemoveFavouriteStockButton.tintColor = User.current.checkStock(stock) ? StockCellConstants.Colors.filledStar : StockCellConstants.Colors.notFilledStar
+        
+        // Labels
         tickerLabel.text = stock.ticker
         companyNameLabel.text = stock.companyName
-        companyNameLabel.font = Constants.Fonts.bodyFontSmall
+        // Move font to setupUI
+        companyNameLabel.font = StockCellConstants.Fonts.bodyFontSmall
         companyNameLabel.numberOfLines = 0
+        let roundedCurrentPrice = stock.quote?.currentPrice.rounded(toPlaces: 2) ?? 0
+        currentPriceLabel.text = StockCellConstants.dollarSign + "\(roundedCurrentPrice)"
+        priceChangePerDayLabel.font = StockCellConstants.Fonts.bodyFont
 
-        currentPriceLabel.text = Constants.dollarSign + "\(stock.quote?.currentPrice ?? 0)"
         let priceChange = stock.quote?.priceChangePerDay ?? 0
         let previousClosePrice = stock.quote?.previousClosePrice ?? 0
         
-        priceChangePerDayLabel.font = Constants.Fonts.bodyFont
+        // Setup priceChangePerDayLabel color
+        setupPriceChangePerDayLabelColor(priceChange: priceChange)
+
+        let fractionText = getFractionText(previousClosePrice: previousClosePrice, priceChange: priceChange)
+        let priceChangeText = getPriceChangeText(priceChange: priceChange)
+        
+        priceChangePerDayLabel.text = priceChangeText + fractionText
+    }
+    
+    func setupPriceChangePerDayLabelColor(priceChange: Double) {
+        if priceChange.isZero {
+            priceChangePerDayLabel.textColor = StockCellConstants.Colors.grayFont
+        } else {
+            let priceChangePositive = priceChange > 0.0
+            priceChangePerDayLabel.textColor = priceChangePositive ? StockCellConstants.Colors.greenFont : StockCellConstants.Colors.redFont
+        }
+    }
+    
+    func getFractionText(previousClosePrice: Double, priceChange: Double) -> String {
         let fraction: Double
         if !previousClosePrice.isZero {
             fraction = abs((priceChange / previousClosePrice).rounded(toPlaces: 2))
         } else {
             fraction = 0.0
         }
-        
+        return " (\(fraction)%)"
+    }
+    
+    func getPriceChangeText(priceChange: Double) -> String {
         var priceChangeText: String
         if priceChange.isZero {
-            priceChangePerDayLabel.textColor = Constants.Colors.grayFont
-            priceChangeText = "\(abs(priceChange))"
+            priceChangeText = "\(StockCellConstants.dollarSign)\(abs(priceChange))"
         } else {
             let priceChangePositive = priceChange > 0.0
-            priceChangePerDayLabel.textColor = priceChangePositive ? Constants.Colors.greenFont : Constants.Colors.redFont
-            priceChangeText = (priceChangePositive ? "+" : "-") + Constants.dollarSign + "\(abs(priceChange))"
+            priceChangeText = (priceChangePositive ? "+" : "-") + StockCellConstants.dollarSign + "\(abs(priceChange))"
         }
-        let fractionText = " (\(fraction)%)"
-        priceChangePerDayLabel.text = priceChangeText + fractionText
+        return priceChangeText
     }
 }
 
@@ -154,16 +183,16 @@ private extension StockCell {
     }
     
     func changeButtonColor() {
-        if addOrRemoveFavouriteStockButton.tintColor == Constants.Colors.filledStar {
-            addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.notFilledStar
+        if addOrRemoveFavouriteStockButton.tintColor == StockCellConstants.Colors.filledStar {
+            addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.notFilledStar
         } else {
-            addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.filledStar
+            addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.filledStar
         }
     }
     
     func setupAddToFavouritesButton() {
-        addOrRemoveFavouriteStockButton.setImage(Constants.Images.star, for: .normal)
-        addOrRemoveFavouriteStockButton.tintColor = Constants.Colors.notFilledStar
+        addOrRemoveFavouriteStockButton.setImage(StockCellConstants.Images.star, for: .normal)
+        addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.notFilledStar
         
         addOrRemoveFavouriteStockButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
     }

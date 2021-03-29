@@ -12,7 +12,7 @@
 		5B0E124F25EE2BD900B66622 /* StocksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0E124E25EE2BD900B66622 /* StocksViewController.swift */; };
 		5B0E125425EE2BDC00B66622 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B0E125325EE2BDC00B66622 /* Assets.xcassets */; };
 		5B0E125725EE2BDC00B66622 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B0E125525EE2BDC00B66622 /* LaunchScreen.storyboard */; };
-		5B0E126225EE2BDD00B66622 /* StocksViewerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0E126125EE2BDD00B66622 /* StocksViewerTests.swift */; };
+		5B0E126225EE2BDD00B66622 /* StockCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0E126125EE2BDD00B66622 /* StockCellTests.swift */; };
 		5B0E126D25EE2BDD00B66622 /* StocksViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0E126C25EE2BDD00B66622 /* StocksViewerUITests.swift */; };
 		5B15EC9B25EE2F1C00058D09 /* Stock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15EC9A25EE2F1C00058D09 /* Stock.swift */; };
 		5B15ECA325EE30B700058D09 /* StocksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECA225EE30B700058D09 /* StocksView.swift */; };
@@ -99,7 +99,7 @@
 		5B0E125625EE2BDC00B66622 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5B0E125825EE2BDC00B66622 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B0E125D25EE2BDD00B66622 /* StocksViewerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StocksViewerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5B0E126125EE2BDD00B66622 /* StocksViewerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StocksViewerTests.swift; sourceTree = "<group>"; };
+		5B0E126125EE2BDD00B66622 /* StockCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockCellTests.swift; sourceTree = "<group>"; };
 		5B0E126325EE2BDD00B66622 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B0E126825EE2BDD00B66622 /* StocksViewerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StocksViewerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B0E126C25EE2BDD00B66622 /* StocksViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StocksViewerUITests.swift; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 		5B0E126025EE2BDD00B66622 /* StocksViewerTests */ = {
 			isa = PBXGroup;
 			children = (
-				5B0E126125EE2BDD00B66622 /* StocksViewerTests.swift */,
+				5B0E126125EE2BDD00B66622 /* StockCellTests.swift */,
 				5B0E126325EE2BDD00B66622 /* Info.plist */,
 			);
 			path = StocksViewerTests;
@@ -539,7 +539,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B0E126225EE2BDD00B66622 /* StocksViewerTests.swift in Sources */,
+				5B0E126225EE2BDD00B66622 /* StockCellTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -771,7 +771,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 73A856J95H;
 				INFOPLIST_FILE = StocksViewerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -793,7 +793,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 73A856J95H;
 				INFOPLIST_FILE = StocksViewerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

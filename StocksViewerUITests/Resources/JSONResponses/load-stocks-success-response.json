@@ -1,29 +1,4 @@
 [
-  {
-    "currency": "USD",
-    "description": "UAN POWER CORP",
-    "displaySymbol": "UPOW",
-    "figi": "BBG000BGHYF2",
-    "mic": "OTCM",
-    "symbol": "UPOW",
-    "type": "Common Stock"
-  },
-  {
-    "currency": "USD",
-    "description": "APPLE INC",
-    "displaySymbol": "AAPL",
-    "figi": "BBG000B9Y5X2",
-    "mic": "XNGS",
-    "symbol": "AAPL",
-    "type": "Common Stock"
-  },
-  {
-    "currency": "USD",
-    "description": "EXCO TECHNOLOGIES LTD",
-    "displaySymbol": "EXCOF",
-    "figi": "BBG000JHDDS8",
-    "mic": "OOTC",
-    "symbol": "EXCOF",
-    "type": "Common Stock"
-  }
+    {"currency":"USD","description":"FARMERS BANCORP (INDIANA)","displaySymbol":"FABP","figi":"BBG000BJT4C2","mic":"OOTC","symbol":"FABP","type":"Common Stock"},{"currency":"USD","description":"COMPAGNIE FINANCIERE TRAD-BR","displaySymbol":"CFNCF","figi":"BBG000BW5KH8","mic":"OOTC","symbol":"CFNCF","type":"Common Stock"},{"currency":"USD","description":"HONSHU CHEMICAL INDUSTRY CO","displaySymbol":"HOCMF","figi":"BBG00NQD1VY5","mic":"OOTC","symbol":"HOCMF","type":"Common Stock"},{"currency":"USD","description":"SYDNEY AIRPORT","displaySymbol":"SYDDF","figi":"BBG000P7BZK4","mic":"OOTC","symbol":"SYDDF","type":"Stapled Security"},{"currency":"USD","description":"VIA VAREJO SA -SP ADR","displaySymbol":"GBXPY","figi":"BBG000HVJNX5","mic":"OOTC","symbol":"GBXPY","type":"ADR"},{"currency":"USD","description":"BARNES \u0026 NOBLE EDUCATION INC","displaySymbol":"BNED","figi":"BBG009CNQCW6","mic":"XNYS","symbol":"BNED","type":"Common Stock"},{"currency":"USD","description":"CLINIGEN GROUP PLC","displaySymbol":"CLIGF","figi":"BBG005D58RR5","mic":"OOTC","symbol":"CLIGF","type":"Common Stock"},{"currency":"USD","description":"SAHA-UNION CORP PCL-NVDR","displaySymbol":"SHAUF","figi":"BBG00WYH1YQ0","mic":"OOTC","symbol":"SHAUF","type":"NVDR"},{"currency":"USD","description":"AAC TECHNOLOGIES HOLDINGS IN","displaySymbol":"AACAF","figi":"BBG000C3S8L8","mic":"OOTC","symbol":"AACAF","type":"Common Stock"},{"currency":"USD","description":"DIVERSIFIED OIL AND GAS HOLD","displaySymbol":"DVFI","figi":"BBG000Q668B1","mic":"OOTC","symbol":"DVFI","type":"Common Stock"},{"currency":"USD","description":"MADISON AVE MEDIA INC","displaySymbol":"KHZM","figi":"BBG000DP7VJ3","mic":"OOTC","symbol":"KHZM","type":"Common Stock"},{"currency":"USD","description":"STATSURE DIAGNOSTIC SYSTEMS","displaySymbol":"SSUR","figi":"BBG000BMGJR0","mic":"OOTC","symbol":"SSUR","type":"Common Stock"},{"currency":"USD","description":"TURK TRAKTOR VE ZIRAAT MAKIN","displaySymbol":"TTRKF","figi":"BBG002JW8ZK6","mic":"OOTC","symbol":"TTRKF","type":"Common Stock"},{"currency":"USD","description":"EFG-HERMES HOLDINGS-GDR","displaySymbol":"EFGZF","figi":"BBG000FTPHD0","mic":"OOTC","symbol":"EFGZF","type":"GDR"},{"currency":"USD","description":"LAKELAND FINANCIAL CORP","displaySymbol":"LKFN","figi":"BBG000BHR1R8","mic":"XNAS","symbol":"LKFN","type":"Common Stock"},{"currency":"USD","description":"DIALOG SEMICONDUCTOR PLC","displaySymbol":"DLGNF","figi":"BBG000C3VW40","mic":"OOTC","symbol":"DLGNF","type":"Common Stock"},{"currency":"USD","description":"ABILENE OIL AND GAS LTD","displaySymbol":"WOIIF","figi":"BBG003Q61L03","mic":"OOTC","symbol":"WOIIF","type":"Common Stock"},{"currency":"USD","description":"CAPITAL \u0026 REGIONAL PLC","displaySymbol":"CRPLF","figi":"BBG00W0JLVF9","mic":"OOTC","symbol":"CRPLF","type":"REIT"},{"currency":"USD","description":"TIMES UNIVERSAL GROUP HOLDIN","displaySymbol":"FBIHF","figi":"BBG00NJ3Z655","mic":"OOTC","symbol":"FBIHF","type":"Common Stock"},{"currency":"USD","description":"ARIZONA METALS CORP","displaySymbol":"AZMCF","figi":"BBG00WDSPWV1","mic":"OOTC","symbol":"AZMCF","type":"Common Stock"},{"currency":"USD","description":"NITTO DENKO CORP-UNSPONS ADR","displaySymbol":"NDEKY","figi":"BBG000BFBMQ4","mic":"OOTC","symbol":"NDEKY","type":"ADR"},{"currency":"USD","description":"LIBERTY LATIN AMERIC-CL C","displaySymbol":"LILAK","figi":"BBG00JKWHZ81","mic":"XNAS","symbol":"LILAK","type":"Common Stock"},{"currency":"USD","description":"SUPERIOR GROUP OF COS INC","displaySymbol":"SGC","figi":"BBG000BSV7D1","mic":"XNAS","symbol":"SGC","type":"Common Stock"},{"currency":"USD","description":"FIRST TRUST JAPAN","displaySymbol":"FJP","figi":"BBG001MKPY33","mic":"XNAS","symbol":"FJP","type":"ETP"
+    }
 ]

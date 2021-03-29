@@ -15,6 +15,8 @@ struct StocksViewConstants {
 }
 
 final class StocksView: UIView {
+    
+    // MARK: Stored Properties
     private var tableView: UITableView!
     private var showMoreButton = UIButton(type: .system)
     private var hideStocksButton = UIButton(type: .system)
@@ -22,6 +24,8 @@ final class StocksView: UIView {
     private var showMoreStocksAction: (() -> Void)
     private var hideStocksAction: (() -> Void)
     
+    
+    // MARK: Initializers
     init(viewController: StocksViewController, showMoreStocksAction: @escaping () -> Void, hideStocksAction: @escaping () -> Void) {
         self.showMoreStocksAction = showMoreStocksAction
         self.hideStocksAction = hideStocksAction
@@ -39,7 +43,7 @@ final class StocksView: UIView {
 
 // MARK: - Public Methods
 extension StocksView {
-    func updateTable(completion: (() -> Void)? = nil) {
+    func reloadTable(completion: (() -> Void)? = nil) {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
             completion?()
@@ -49,6 +53,20 @@ extension StocksView {
     func updateTableViewInsets(with insets: UIEdgeInsets) {
         tableView.contentInset = insets
         tableView.scrollIndicatorInsets = insets
+    }
+    
+    func setHeaderAndFooterViewsHidden(isHidden: Bool) {
+        tableView.tableHeaderView?.isHidden = isHidden
+        tableView.tableFooterView?.isHidden = isHidden
+    }
+    
+    func reloadRow(at index: Int) {
+        DispatchQueue.main.async { [weak self] in
+            let indexPath = IndexPath(row: index, section: 0)
+            if self?.tableView.cellForRow(at: indexPath) != nil {
+                self?.tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        }
     }
 }
 

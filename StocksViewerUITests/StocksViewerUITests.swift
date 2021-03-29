@@ -25,39 +25,130 @@ final class StocksViewerUITests: XCTestCase {
     }
 }
 
+// MARK: - General
 extension StocksViewerUITests {
     func testLoadStocksSuccess() throws {
         app.launchWithSuccessLoadStocksResponse()
         
-        XCTAssertTrue(app.tables.staticTexts["APPLE INC"].waitForExistence(timeout: 1))
-        XCTAssertTrue(app.tables.staticTexts["UAN POWER CORP"].exists)
-        XCTAssertTrue(app.tables.staticTexts["EXCO TECHNOLOGIES LTD"].exists)
+        XCTAssertTrue(app.tables.staticTexts["AAC TECHNOLOGIES HOLDINGS IN"].waitForExistence(timeout: 1))
+        XCTAssertTrue(app.tables.staticTexts["ARIZONA METALS CORP"].exists)
+        XCTAssertTrue(app.tables.staticTexts["CLINIGEN GROUP PLC"].exists)
     }
-    
-    func testAddStockToFavourites() throws {
-        app.launchWithSuccessLoadStocksResponse()
-        
-        // When
-        app.tables.cells.containing(.staticText, identifier: "APPLE INC").buttons["favorite"].tap()
-        app.navigationBars["Stocks"].buttons["Favourites"].tap()
-        
-        // Then
-        XCTAssertTrue(app.tables.staticTexts["APPLE INC"].waitForExistence(timeout: 1))
-    }
-    
-    // TODO: - Check color of star
-    func testRemoveStockFromFavourites() {
+}
+
+// MARK: - Search
+extension StocksViewerUITests {
+    func testSearch() throws {
         app.launchWithSuccessLoadStocksResponse()
         
         // Given
         let tablesQuery = app.tables
-        tablesQuery.cells.containing(.staticText, identifier: "APPLE INC").buttons["favorite"].tap()
+        let navigationBar = app.navigationBars["Stocks"]
+        let searchBar = navigationBar.searchFields["Find company or ticker"]
+            
+        // When
+        app.swipeDown()
+        searchBar.tap()
+        searchBar.typeText("CLINIGEN")
+        
+        // Then
+        XCTAssertTrue(tablesQuery.cells.count == 1)
+    }
+}
+
+// MARK: - Buttons
+extension StocksViewerUITests {
+    func testShowMoreButton() throws {
+        app.launchWithSuccessLoadStocksResponse()
+        
+        // When
+        app.buttons["Show more"].tap()
+        
+        // Then
+        XCTAssertTrue(app.cells.count == 10)
+    }
+    
+    func testHideButton() throws {
+        app.launchWithSuccessLoadStocksResponse()
+        
+        // Given
+        app.buttons["Show more"].tap()
+        app.buttons["Show more"].tap()
+        
+        // When
+        app.buttons["Hide"].tap()
+        
+        // Then
+        XCTAssertTrue(app.cells.count == 5)
+    }
+}
+
+// MARK: - Favourites
+extension StocksViewerUITests {
+    func testAddStockToFavourites() throws {
+        app.launchWithSuccessLoadStocksResponse()
+        
+        // When
+        app.tables.cells.containing(.staticText, identifier: "CLIGF").buttons["favorite"].tap()
+        app.navigationBars["Stocks"].buttons["Favourites"].tap()
+        
+        // Then
+        XCTAssertTrue(app.tables.staticTexts["CLIGF"].waitForExistence(timeout: 1))
+    }
+    
+    func testRemoveStockFromFavourites() throws {
+        app.launchWithSuccessLoadStocksResponse()
+        
+        // Given
+        let tablesQuery = app.tables
+        tablesQuery.cells.containing(.staticText, identifier: "CLIGF").buttons["favorite"].tap()
         app.navigationBars["Stocks"].buttons["Favourites"].tap()
         
         // When
-        tablesQuery.cells.containing(.staticText, identifier: "APPLE INC").buttons["favorite"].tap()
+        tablesQuery.cells.containing(.staticText, identifier: "CLIGF").buttons["favorite"].tap()
         
         // Then
-        XCTAssertFalse(tablesQuery.cells.containing(.staticText, identifier: "APPLE INC").buttons["favorite"].waitForExistence(timeout: 1))
+        XCTAssertFalse(tablesQuery.cells.containing(.staticText, identifier: "CLIGF").buttons["favorite"].waitForExistence(timeout: 1))
+    }
+    
+    func testAddStockToFavouritesInSearch() throws {
+        app.launchWithSuccessLoadStocksResponse()
+        
+        // Given
+        let tablesQuery = app.tables
+        let navigationBar = app.navigationBars["Stocks"]
+        let searchBar = navigationBar.searchFields["Find company or ticker"]
+            
+        // When
+        app.swipeDown()
+        searchBar.tap()
+        searchBar.typeText("CLINIGEN")
+        tablesQuery.cells.containing(.staticText, identifier: "CLIGF").buttons["favorite"].tap()
+        navigationBar.buttons["Cancel"].tap()
+        app.navigationBars["Stocks"].buttons["Favourites"].tap()
+        
+        // Then
+        XCTAssertTrue(tablesQuery.cells.containing(.staticText, identifier: "CLIGF").buttons["favorite"].waitForExistence(timeout: 1))
+    }
+    
+    func testRemoveStockFromFavouritesInSearch() throws {
+        app.launchWithSuccessLoadStocksResponse()
+        
+        // Given
+        let tablesQuery = app.tables
+        let navigationBar = app.navigationBars["Favourites"]
+        let searchBar = navigationBar.searchFields["Find company or ticker"]
+            
+        tablesQuery.cells.containing(.staticText, identifier: "CFNCF").buttons["favorite"].tap()
+        app.navigationBars["Stocks"].buttons["Favourites"].tap()
+        
+        // When
+        app.swipeDown()
+        searchBar.tap()
+        searchBar.typeText("COMPAGNIE FINANCIERE")
+        tablesQuery.cells.containing(.staticText, identifier: "CFNCF").buttons["favorite"].tap()
+        
+        // Then
+        XCTAssertFalse(tablesQuery.cells.containing(.staticText, identifier: "CFNCF").buttons["favorite"].waitForExistence(timeout: 1))
     }
 }

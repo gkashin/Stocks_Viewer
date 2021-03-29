@@ -8,29 +8,58 @@
 import Foundation
 
 class WebSocketManager {
+    
+    // MARK: Stored Properties
     static let shared = WebSocketManager()
-    
-    private var dataArray = [Stock]()
-    
-    private let webSocketURL = URL(string: "wss://ws.finnhub.io?token=\(User.active.apiKey)")!
+        
+    private let webSocketURL = URL(string: "wss://ws.finnhub.io?token=\(User.current.apiKey)")!
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     
     private let session: URLSession
+    private var dataArray = [Stock]()
     private var socket: URLSessionWebSocketTask!
     
+    
+    // MARK: Initializers
     private init() {
         self.session = URLSession(configuration: .default)
-        self.connect()
+        socket = session.webSocketTask(with: webSocketURL)
+        resumeUpdating()
     }
     
-    func connect() {
-        socket = session.webSocketTask(with: webSocketURL)
-        receiveData() {}
+    
+    // MARK: Network Methods
+    private func handle(_ data: Data) -> [String: Any]? {
+        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String : Any] else {
+            print(#line, #function, "Couldn't decode data from \(data)")
+            return nil
+        }
+        
+        guard let data = jsonDictionary["data"] as? [[String : Any]] else {
+            print(#line, #function, "Couldn't get data from \(jsonDictionary)")
+            return nil
+        }
+        
+        guard let lastPrice = data.first!["p"] as? Double, let ticker = data.first!["s"] as? String else {
+            print(#line, #function, "Couldn't get data from \(data)")
+            return nil
+        }
+        
+        return ["ticker": ticker, "lastPrice": lastPrice]
+    }
+    
+    func resumeUpdating() {
         socket.resume()
     }
     
-    func receiveData(completion: @escaping () -> Void) {
+    func stopUpdating() {
+        socket.suspend()
+    }
+    
+    func receiveData(completion: @escaping ([String: Any]?) -> Void) {
+        var quoteInfo: [String: Any]? = ["ticker": "", "lastPrice": 0.0]
+        
         socket.receive { [weak self] result in
             guard let self = self else { return }
             
@@ -39,36 +68,18 @@ class WebSocketManager {
                 switch message {
                 case .string(let text):
                     guard let data = text.data(using: .utf8) else { return }
-                    self.handle(data)
+                    quoteInfo = self.handle(data)
                 case .data(let data):
-                    self.handle(data)
+                    quoteInfo = self.handle(data)
                 @unknown default:
                     debugPrint("Unknown message")
                 }
             case .failure(let error):
                 print("Error in receiving message: \(error)")
             }
-            self.receiveData() {}
+            completion(quoteInfo)
+            self.receiveData(completion: completion)
         }
-    }
-    
-    func handle(_ data: Data) {
-        guard let jsonDictionary = try? JSONSerialization.jsonObject(with: data) as? [String : Any] else {
-            print(#line, #function, "Couldn't decode data from \(data)")
-            return
-        }
-        
-        guard let data = jsonDictionary["data"] as? [[String : Any]] else {
-            print(#line, #function, "Couldn't get data from \(jsonDictionary)")
-            return
-        }
-        
-        guard let lastPrice = data.first!["p"] as? Double, let ticker = data.first!["s"] as? String else {
-            print(#line, #function, "Couldn't get data from \(data)")
-            return
-        }
-        
-        print(ticker, lastPrice)
     }
     
     func subscribeStocks(_ stocks: [Stock]) {
@@ -79,11 +90,11 @@ class WebSocketManager {
                 
                 self.socket.send(.data(data)) { err in
                     if err != nil {
-                        print(err.debugDescription)
+                        print(#line, #function, err.debugDescription)
                     }
                 }
             } catch {
-                print(error)
+                print(#line, #function, error)
             }
         }
     }
@@ -96,11 +107,11 @@ class WebSocketManager {
                 
                 self.socket.send(.data(data)) { err in
                     if err != nil {
-                        print(err.debugDescription)
+                        print(#line, #function, err.debugDescription)
                     }
                 }
             } catch {
-                print(error)
+                print(#line, #function, error)
             }
         }
     }
