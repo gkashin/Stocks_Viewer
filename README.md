@@ -1,2 +1,2 @@
 # stocks-viewer
-![](images/finnhub-logo)
+![](images/finnhub-logo.png)
