@@ -1,6 +1,5 @@
 # Stocks Viewer
-App for easy viewing of the list of Stocks and Quotes in real time!
--
+## App for easy viewing of the list of Stocks and Quotes in real time!
 [![](images/finnhub-logo.png)](https://finnhub.io)
 
 ## Description
