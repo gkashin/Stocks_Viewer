@@ -7,7 +7,7 @@ App for easy viewing of the list of Stocks and Quotes in real time!\
 This application allows you to view the list of stocks, as well as add stocks to favourites and get real-time quotes data
 
 ## Features
-* Stocks Viewer uses [*Finnhub*](https://finnhub.io) free Real-Time RESTful APIs and Websocket for Stocks (limited to 30 requests per second)
+* Stocks Viewer uses [*Finnhub*](https://finnhub.io) free Real-Time RESTful APIs and Websocket for Stocks (limited to 30 requests per second, Websocket doesn't work on weekends)
 * User Defaults are used for permanent storage of favourites stocks
 
 ## Sneak Peek
