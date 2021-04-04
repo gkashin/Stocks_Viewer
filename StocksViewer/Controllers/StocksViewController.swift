@@ -19,6 +19,7 @@ class StocksViewController: UIViewController {
     
     // MARK: Stored Properties
     private let searchController = UISearchController()
+    private var activityIndicator = UIActivityIndicatorView()
     private var factorForNumberOfVisibleStocks = 1
     private var actualStocksCount: Int {
         return isFiltered ? filteredStocks.count : stocks.count
@@ -87,7 +88,12 @@ class StocksViewController: UIViewController {
     
     // MARK: Network
     func loadStocks() {
-        NetworkManager.shared.getAllStocks { result in
+        // Show activity indicator
+        showActivityIndicator()
+        
+        NetworkManager.shared.getAllStocks { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(data: let data):
                 guard let stocks = data as? [Stock] else { return }
@@ -102,7 +108,13 @@ class StocksViewController: UIViewController {
                 }
             case .failure(error: let error):
                 print(error?.localizedDescription ?? "")
+                self.showAlert(error: .unableToLoadStocks) { [weak self] in
+                    self?.loadStocks()
+                }
             }
+            
+            // Hide activity indicator after loading
+            self.hideActivityIndicator()
         }
     }
     
@@ -127,6 +139,7 @@ private extension StocksViewController {
     func setupUI() {
         view.backgroundColor = StockCellConstants.Colors.background
         setupNavigationBar()
+        setupActivityIndicatorView()
     }
     
     func setupNavigationBar() {
@@ -152,6 +165,31 @@ private extension StocksViewController {
         }
         
         stocksView.reloadTable()
+    }
+    
+    func setupActivityIndicatorView() {
+        // Setup activity indicator
+        activityIndicator.style = .medium
+        activityIndicator.color = .black
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+        
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+    }
+    
+    func showActivityIndicator() {
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = false
+    }
+    
+    func hideActivityIndicator() {
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.activityIndicator.isHidden = true
+        }
     }
 }
 

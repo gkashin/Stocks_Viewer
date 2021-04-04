@@ -19,6 +19,8 @@
 		5B15ECA825EE31EA00058D09 /* StockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECA725EE31EA00058D09 /* StockCell.swift */; };
 		5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */; };
 		5B3F71D825F7640F006C6531 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3F71D725F7640F006C6531 /* DataManager.swift */; };
+		5B6475E92619AEAF005ADCA3 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6475E82619AEAF005ADCA3 /* UIViewController+Extension.swift */; };
+		5B6475EE2619B19B005ADCA3 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6475ED2619B19B005ADCA3 /* NetworkError.swift */; };
 		5B690CAE2610E27100D6AF5D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD89CA925F617630065C517 /* User.swift */; };
 		5B690CB22610E27F00D6AF5D /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3F71D725F7640F006C6531 /* DataManager.swift */; };
 		5B690CB62610E28200D6AF5D /* Stock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B15EC9A25EE2F1C00058D09 /* Stock.swift */; };
@@ -109,6 +111,8 @@
 		5B15ECA725EE31EA00058D09 /* StockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockCell.swift; sourceTree = "<group>"; };
 		5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		5B3F71D725F7640F006C6531 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		5B6475E82619AEAF005ADCA3 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
+		5B6475ED2619B19B005ADCA3 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		5B7525C12605E1EC0091E648 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		5B7525CF2605EBE80091E648 /* UIStackView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extension.swift"; sourceTree = "<group>"; };
 		5B830B892610BD5A0002A3AA /* Parameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parameters.swift; sourceTree = "<group>"; };
@@ -241,6 +245,7 @@
 		5B0E128225EE2C2400B66622 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5B6475ED2619B19B005ADCA3 /* NetworkError.swift */,
 				5B15EC9A25EE2F1C00058D09 /* Stock.swift */,
 				5BD89CA925F617630065C517 /* User.swift */,
 			);
@@ -271,6 +276,7 @@
 				5B7525C12605E1EC0091E648 /* Double+Extension.swift */,
 				5B15ECAC25EE33D600058D09 /* UILabel+Extension.swift */,
 				5B7525CF2605EBE80091E648 /* UIStackView+Extension.swift */,
+				5B6475E82619AEAF005ADCA3 /* UIViewController+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -516,6 +522,7 @@
 				5B15ECAD25EE33D600058D09 /* UILabel+Extension.swift in Sources */,
 				5B830C122610C1310002A3AA /* URLSessionDataTaskMock+Extension.swift in Sources */,
 				5BF26AEB25F0CC9500845C65 /* NetworkManager.swift in Sources */,
+				5B6475E92619AEAF005ADCA3 /* UIViewController+Extension.swift in Sources */,
 				5B830C152610C1310002A3AA /* URLSession+Extension.swift in Sources */,
 				5B830C302610CF750002A3AA /* Identifiable.swift in Sources */,
 				5B830C132610C1310002A3AA /* URLSessionMock+Extension.swift in Sources */,
@@ -530,6 +537,7 @@
 				5B15ECA325EE30B700058D09 /* StocksView.swift in Sources */,
 				5B830C2F2610CF750002A3AA /* URLSessionProtocol.swift in Sources */,
 				5BE1B8EE25FA0E7900E6E2AF /* WebSocketManager.swift in Sources */,
+				5B6475EE2619B19B005ADCA3 /* NetworkError.swift in Sources */,
 				5B830BFE2610C1120002A3AA /* Parameters.swift in Sources */,
 				5B830C202610C1870002A3AA /* User.swift in Sources */,
 			);

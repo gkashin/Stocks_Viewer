@@ -16,7 +16,7 @@ struct StocksViewConstants {
 
 final class StocksView: UIView {
     
-    // MARK: Stored Properties
+    // MARK: Stored Properties    
     private var tableView: UITableView!
     private var showMoreButton = UIButton(type: .system)
     private var hideStocksButton = UIButton(type: .system)
