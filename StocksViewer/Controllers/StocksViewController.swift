@@ -24,12 +24,16 @@ class StocksViewController: UIViewController {
     private var actualStocksCount: Int {
         return isFiltered ? filteredStocks.count : stocks.count
     }
+    private var isSearchBarEmpty: Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
    
     var stocks = [Stock]()
     var filteredStocks = [Stock]()
     var stocksView: StocksView!
     var isFiltered: Bool {
-        return searchController.isActive
+        // Search bar is active and text is not empty
+        return searchController.isActive && !isSearchBarEmpty
     }
     // Number of stocks that are visible at the table
     var numberOfVisibleStocks: Int {
@@ -85,9 +89,15 @@ class StocksViewController: UIViewController {
         }
     }
     
+    func searchControllerEnabled(enabled: Bool) {
+        searchController.searchBar.isUserInteractionEnabled = enabled
+    }
+    
     
     // MARK: Network
     func loadStocks() {
+        // Disable searchController before loading
+        searchControllerEnabled(enabled: false)
         // Show activity indicator
         showActivityIndicator()
         
@@ -112,7 +122,9 @@ class StocksViewController: UIViewController {
                     self?.loadStocks()
                 }
             }
-            
+        
+            // Enable searchController after loading
+            self.searchControllerEnabled(enabled: true)
             // Hide activity indicator after loading
             self.hideActivityIndicator()
         }
@@ -148,6 +160,8 @@ private extension StocksViewController {
     }
     
     func setupSearchController() {
+        // Disable searchController initially (enable after loading stocks)
+        searchController.searchBar.isUserInteractionEnabled = false
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = StocksViewControllerConstants.searchBarPlaceholder
@@ -158,9 +172,9 @@ private extension StocksViewController {
         definesPresentationContext = true
     }
     
-    func filterContentForSearchText(_ searchText: String) {
+    func filterContentForSearchText(_ searchText: String?) {
         filteredStocks = stocks
-        if !searchText.isEmpty {
+        if let searchText = searchText, !searchText.isEmpty {
             filteredStocks = stocks.filter { $0.companyName.lowercased().contains(searchText.lowercased()) || $0.ticker.lowercased().contains(searchText.lowercased()) }
         }
         
@@ -181,8 +195,10 @@ private extension StocksViewController {
     }
     
     func showActivityIndicator() {
-        activityIndicator.startAnimating()
-        activityIndicator.isHidden = false
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.startAnimating()
+            self?.activityIndicator.isHidden = false
+        }
     }
     
     func hideActivityIndicator() {
@@ -234,7 +250,8 @@ private extension StocksViewController {
 // MARK: UISearchResultsUpdating
 extension StocksViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let searchText = searchController.searchBar.text else { return }
+        guard !stocks.isEmpty else { return }
+        let searchText = searchController.searchBar.text
         filterContentForSearchText(searchText)
     }
 }
@@ -293,6 +310,10 @@ extension StocksViewController {
 extension StocksViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return StocksViewControllerConstants.cellHeight
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

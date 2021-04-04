@@ -24,14 +24,14 @@ class StockCellTests: XCTestCase {
 }
 
 extension StockCellTests {
-    func testGetFractionText() {
-        let previousClosePrices = [0.0, 10.23, -100.4439]
-        let priceChanges = [192.232, -123.43, 0.0]
-        let results = [" (0.0%)", " (12.07%)", " (0.0%)"]
+    func testGetPercentText() {
+        let previousClosePrices = [0.0, -123.43, -100.4439]
+        let priceChanges = [192.232, 10.23, 0.0]
+        let results = [" (0.0%)", " (8.29%)", " (0.0%)"]
         
         for i in 0..<results.count {
-            let fraction = sut.getFractionText(previousClosePrice: previousClosePrices[i], priceChange: priceChanges[i])
-            XCTAssertEqual(fraction, results[i])
+            let percentText = sut.getPercentText(previousClosePrice: previousClosePrices[i], priceChange: priceChanges[i])
+            XCTAssertEqual(percentText, results[i])
         }
     }
     

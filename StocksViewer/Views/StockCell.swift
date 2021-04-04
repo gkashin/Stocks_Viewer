@@ -86,10 +86,10 @@ extension StockCell {
         // Setup priceChangePerDayLabel color
         setupPriceChangePerDayLabelColor(priceChange: priceChange)
 
-        let fractionText = getFractionText(previousClosePrice: previousClosePrice, priceChange: priceChange)
+        let percentText = getPercentText(previousClosePrice: previousClosePrice, priceChange: priceChange)
         let priceChangeText = getPriceChangeText(priceChange: priceChange)
         
-        priceChangePerDayLabel.text = priceChangeText + fractionText
+        priceChangePerDayLabel.text = priceChangeText + percentText
     }
     
     func setupPriceChangePerDayLabelColor(priceChange: Double) {
@@ -101,14 +101,16 @@ extension StockCell {
         }
     }
     
-    func getFractionText(previousClosePrice: Double, priceChange: Double) -> String {
-        let fraction: Double
+    func getPercentText(previousClosePrice: Double, priceChange: Double) -> String {
+        var percent: Double
         if !previousClosePrice.isZero {
-            fraction = abs((priceChange / previousClosePrice).rounded(toPlaces: 2))
+            let fraction = abs(priceChange / previousClosePrice)
+            // Convert to percent (* 100%)
+            percent = (100 * fraction).rounded(toPlaces: 2)
         } else {
-            fraction = 0.0
+            percent = 0.0
         }
-        return " (\(fraction)%)"
+        return " (\(percent)%)"
     }
     
     func getPriceChangeText(priceChange: Double) -> String {

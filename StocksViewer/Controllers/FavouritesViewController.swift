@@ -70,5 +70,7 @@ final class FavouritesViewController: StocksViewController {
         // Subscribe for stocks
         WebSocketManager.shared.subscribeStocks(stocks)
         self.loadQuotes(byIndexes: Array(0..<numberOfVisibleStocks))
+        // Enable searchController after loading
+        searchControllerEnabled(enabled: true)
     }
 }
