@@ -15,6 +15,6 @@ View Full List of Stocks | Load More Stocks
 :-----------------------:|:-------------:
 ![](images/stocks.png) | ![](images/show-more.png)
 
-Search for Stock and Add to Favourites |  Get Real-Time Favourites Quotes Data
+Search for Stock and Add to Favourites |  Get Real-Time Favourite Quotes Data
 :---------------------:|:-----------------:
 ![](images/search.png) | ![](images/favourites.png)
