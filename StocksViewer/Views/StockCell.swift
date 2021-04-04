@@ -26,6 +26,7 @@ struct StockCellConstants {
     
     struct Images {
         static let star = UIImage(systemName: "star.fill")
+        static let stock = UIImage(named: "stock")!
     }
 
     static let dollarSign = "$"
@@ -44,6 +45,7 @@ final class StockCell: UITableViewCell {
     private var companyNameLabel = UILabel()
     private var currentPriceLabel = UILabel()
     private var priceChangePerDayLabel = UILabel()
+    private var stockImageView = UIImageView()
     
     private var addOrRemoveFavouriteStockButton = UIButton()
     
@@ -133,8 +135,22 @@ private extension StockCell {
 // MARK: UI
 private extension StockCell {
     func setupUI() {
+        setupImageView()
         setupLabels()
         setupAddToFavouritesButton()
+    }
+    
+    func setupImageView() {
+        stockImageView.image = StockCellConstants.Images.stock
+        stockImageView.contentMode = .scaleAspectFill
+        
+        stockImageView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(stockImageView)
+        NSLayoutConstraint.activate([
+            stockImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            stockImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            stockImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+        ])
     }
     
     func setupLabels() {
@@ -150,21 +166,19 @@ private extension StockCell {
     }
     
     func setupLabelsConstraints() {
-        tickerLabel.translatesAutoresizingMaskIntoConstraints = false
-        companyNameLabel.translatesAutoresizingMaskIntoConstraints = false
         currentPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceChangePerDayLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        // Stack Views
         let tickerStackView = UIStackView(arrangedSubviews: [tickerLabel, addOrRemoveFavouriteStockButton], axis: .horizontal, spacing: 6)
         let leftSideStackView = UIStackView(arrangedSubviews: [tickerStackView, companyNameLabel], axis: .vertical, spacing: 5)
         leftSideStackView.translatesAutoresizingMaskIntoConstraints = false
         leftSideStackView.alignment = .leading
         contentView.addSubview(leftSideStackView)
         
-        // Ticker Label and Company Name Label
         NSLayoutConstraint.activate([
             leftSideStackView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-            leftSideStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 72),
+            leftSideStackView.leadingAnchor.constraint(equalTo: self.stockImageView.trailingAnchor, constant: 12),
         ])
 
         // Price Change Per Day Label
@@ -182,18 +196,18 @@ private extension StockCell {
         ])
     }
     
+    func setupAddToFavouritesButton() {
+        addOrRemoveFavouriteStockButton.setImage(StockCellConstants.Images.star, for: .normal)
+        addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.notFilledStar
+        
+        addOrRemoveFavouriteStockButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
+    }
+    
     func changeButtonColor() {
         if addOrRemoveFavouriteStockButton.tintColor == StockCellConstants.Colors.filledStar {
             addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.notFilledStar
         } else {
             addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.filledStar
         }
-    }
-    
-    func setupAddToFavouritesButton() {
-        addOrRemoveFavouriteStockButton.setImage(StockCellConstants.Images.star, for: .normal)
-        addOrRemoveFavouriteStockButton.tintColor = StockCellConstants.Colors.notFilledStar
-        
-        addOrRemoveFavouriteStockButton.addTarget(self, action: #selector(addToFavouritesButtonTapped(_:)), for: .touchUpInside)
     }
 }
