@@ -8,7 +8,7 @@ This application allows you to view the list of stocks, as well as add stocks to
 
 ## Features
 * Stocks Viewer uses [*Finnhub*](https://finnhub.io) free Real-Time RESTful APIs and Websocket for Stocks (limited to 30 requests per second, updating via Websocket doesn't work on weekends)
-* User Defaults are used for permanent storage of favourites stocks
+* User Defaults are used for permanent storage of favourite stocks
 
 ## Sneak Peek
 View Full List of Stocks | Load More Stocks
